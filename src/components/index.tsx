@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { calcolaVelocitaMassima } from "../functions/topspeed";
+import { calcolaManovrabilita } from "../functions/maneuverability";
 
 interface CarDimensions {
   width: number;
@@ -27,6 +29,9 @@ const CarDimensionAndColorCounter: React.FC = () => {
   });
   const [additionalMetrics, setAdditionalMetrics] =
     useState<AdditionalMetrics | null>(null);
+
+  const [weight, setWeight] = useState<number | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const vetroColors = new Set(["#d8fdfe", "#a7e2e4"]);
@@ -208,6 +213,14 @@ const CarDimensionAndColorCounter: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
+  useEffect(() => {
+    setWeight(
+      groupCounts.carrozzeria * 3 +
+        groupCounts.vetro * 0.5 +
+        groupCounts.gomme * 2
+    );
+  }, [groupCounts]);
+
   return (
     <div>
       <h2>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h2>
@@ -250,8 +263,46 @@ const CarDimensionAndColorCounter: React.FC = () => {
         <li>Vetro: {groupCounts.vetro}</li>
         <li>Gomme: {groupCounts.gomme}</li>
       </ul>
+      <p>
+        <strong>Peso:</strong>{" "}
+        {groupCounts.carrozzeria * 3 +
+          groupCounts.vetro * 0.5 +
+          groupCounts.gomme * 2}{" "}
+        kg
+      </p>
+      {dimensions && additionalMetrics && weight && (
+        <>
+          <p>
+            <strong>Rapporto lunghezza/passo:</strong>{" "}
+            {(dimensions.width / additionalMetrics.wheelbase).toFixed(2)}
+          </p>
+          <p>
+            <strong>Velocità massima:</strong>{" "}
+            {calcolaVelocitaMassima(
+              dimensions.width / additionalMetrics.wheelbase,
+              weight,
+              additionalMetrics.carrozzeriaDistanceFromGround,
+              additionalMetrics.aerodynamicCoefficient
+            ).toFixed(2)}{" "}
+            km/h
+          </p>
+          <p>
+            <strong>Manovrabilità:</strong>{" "}
+            {calcolaManovrabilita(
+              additionalMetrics.wheelbase,
+              additionalMetrics.centerOfMassHeight,
+              weight
+            ).toFixed(2)}
+          </p>
+        </>
+      )}
     </div>
   );
 };
 
 export default CarDimensionAndColorCounter;
+
+/* input: (passo: 24, altezza: 8.85) output 600
+input: (passo: 23, altezza: 10.40) output 500
+input: (passo: 23.24, altezza: 19.08) output 250
+input: (passo: 35.50, altezza:  7.81) output: 150 */
