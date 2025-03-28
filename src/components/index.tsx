@@ -29,23 +29,19 @@ const CarDimensionAndColorCounter: React.FC = () => {
   });
   const [additionalMetrics, setAdditionalMetrics] =
     useState<AdditionalMetrics | null>(null);
-
   const [weight, setWeight] = useState<number | null>(null);
+  const [balance, setBalance] = useState<number | null>(null); // 🆕 Nuovo stato
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const vetroColors = new Set(["#d8fdfe", "#a7e2e4"]);
-  // I pixel delle gomme sono quelli neri, normalizzati a "#000"
   const gommeColors = new Set(["#000", "#2d2b2b", "#504e4e"]);
 
-  // Funzione per convertire un componente in una stringa esadecimale a due cifre
   const componentToHex = (c: number): string => {
     const hex = c.toString(16);
     return hex.length === 1 ? "0" + hex : hex;
   };
 
-  // Converte valori RGBA in una stringa hex.
-  // Se alpha è 255 restituisce "#RRGGBB", altrimenti "#RRGGBBAA"
   const rgbaToHex = (r: number, g: number, b: number, a: number): string => {
     if (a === 255) {
       return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
@@ -60,7 +56,6 @@ const CarDimensionAndColorCounter: React.FC = () => {
     }
   };
 
-  // Normalizza il colore in lowercase; ad esempio, converte "#000000" in "#000"
   const normalizeHex = (hex: string): string => {
     const lowerHex = hex.toLowerCase();
     return lowerHex === "#000000" ? "#000" : lowerHex;
@@ -81,12 +76,10 @@ const CarDimensionAndColorCounter: React.FC = () => {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // Disegna l'immagine sul canvas per elaborare i pixel
         ctx.drawImage(img, 0, 0);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
 
-        // Variabili per la carrozzeria
         let minX = canvas.width;
         let maxX = 0;
         let minY = canvas.height;
@@ -94,25 +87,24 @@ const CarDimensionAndColorCounter: React.FC = () => {
         let sumCarrozzeriaY = 0;
         const frontEdge = new Array<number>(canvas.height).fill(-1);
 
-        // Array per raccogliere le coordinate x dei pixel delle gomme, separati in base alla metà del canvas
         const leftWheelX: number[] = [];
         const rightWheelX: number[] = [];
 
-        // Inizializziamo i conteggi
         let counts: GroupCounts = {
           carrozzeria: 0,
           vetro: 0,
           gomme: 0,
         };
 
-        // Itera su ogni pixel (ogni pixel è formato da 4 valori: R, G, B, A)
+        let frontCarrozzeriaPixels = 0; // 🆕
+        let backCarrozzeriaPixels = 0; // 🆕
+
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
           const g = data[i + 1];
           const b = data[i + 2];
           const a = data[i + 3];
 
-          // Escludi i pixel completamente trasparenti
           if (a === 0) continue;
 
           const hexColor = normalizeHex(rgbaToHex(r, g, b, a));
@@ -120,7 +112,6 @@ const CarDimensionAndColorCounter: React.FC = () => {
           const x = pixelIndex % canvas.width;
           const y = Math.floor(pixelIndex / canvas.width);
 
-          // Gestisci i colori delle gomme
           if (gommeColors.has(hexColor)) {
             counts.gomme++;
             if (x < canvas.width / 2) {
@@ -128,27 +119,28 @@ const CarDimensionAndColorCounter: React.FC = () => {
             } else {
               rightWheelX.push(x);
             }
-          }
-          // Gestisci i colori del vetro
-          else if (vetroColors.has(hexColor)) {
+          } else if (vetroColors.has(hexColor)) {
             counts.vetro++;
-          }
-          // Se non è né gomme né vetro, consideriamolo come carrozzeria
-          else {
+          } else {
             counts.carrozzeria++;
             sumCarrozzeriaY += y;
             if (x < minX) minX = x;
             if (x > maxX) maxX = x;
             if (y < minY) minY = y;
             if (y > maxY) maxY = y;
-            // Aggiorna il bordo frontale (il lato destro, quindi x massimo per ogni y)
             frontEdge[y] = Math.max(frontEdge[y], x);
+
+            // 🆕 Calcolo bilanciamento
+            if (x < canvas.width / 2) {
+              backCarrozzeriaPixels++;
+            } else {
+              frontCarrozzeriaPixels++;
+            }
           }
         }
 
         setGroupCounts(counts);
 
-        // Calcolo delle dimensioni della carrozzeria
         if (minX > maxX || minY === canvas.height) {
           setDimensions({ width: 0, height: 0 });
         } else {
@@ -157,10 +149,8 @@ const CarDimensionAndColorCounter: React.FC = () => {
           setDimensions({ width, height });
         }
 
-        // Calcola la distanza della carrozzeria da terra
         const carrozzeriaDistanceFromGround = canvas.height - maxY;
 
-        // Calcola il "passo" (wheelbase) stimando il centro delle ruote
         let wheelbase = 0;
         const average = (arr: number[]) =>
           arr.reduce((acc, val) => acc + val, 0) / arr.length;
@@ -170,14 +160,12 @@ const CarDimensionAndColorCounter: React.FC = () => {
           wheelbase = Math.abs(rightCenter - leftCenter);
         }
 
-        // Calcola l'altezza del centro di massa della carrozzeria
         let centerOfMassHeight = 0;
         if (counts.carrozzeria > 0) {
           const avgY = sumCarrozzeriaY / counts.carrozzeria;
           centerOfMassHeight = canvas.height - avgY;
         }
 
-        // Stima del coefficiente aerodinamico (Cd)
         const slopes: number[] = [];
         for (let y = minY; y < maxY; y++) {
           if (frontEdge[y] !== -1 && frontEdge[y + 1] !== -1) {
@@ -203,6 +191,14 @@ const CarDimensionAndColorCounter: React.FC = () => {
           centerOfMassHeight,
           aerodynamicCoefficient,
         });
+        // 🆕 Calcolo finale bilanciamento
+        const total = frontCarrozzeriaPixels + backCarrozzeriaPixels;
+        if (total > 0) {
+          const balanceValue = backCarrozzeriaPixels / frontCarrozzeriaPixels;
+          setBalance(balanceValue);
+        } else {
+          setBalance(null);
+        }
       };
 
       if (event.target && typeof event.target.result === "string") {
@@ -225,7 +221,6 @@ const CarDimensionAndColorCounter: React.FC = () => {
     <div>
       <h2>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h2>
       <input type="file" accept="image/png" onChange={handleImageUpload} />
-      {/* Il canvas viene usato per elaborare l'immagine ed è nascosto */}
       <canvas ref={canvasRef} style={{ display: "none" }} />
       {dimensions && (
         <div>
@@ -257,6 +252,17 @@ const CarDimensionAndColorCounter: React.FC = () => {
           </p>
         </div>
       )}
+      {balance !== null && (
+        <p>
+          <strong>Bilanciamento retro/fronte:</strong> {balance.toFixed(2)} (
+          {balance > 1
+            ? "sbilanciata verso il retro"
+            : balance < 1
+            ? "sbilanciata verso il fronte"
+            : "bilanciata"}
+          )
+        </p>
+      )}
       <h3>Conteggio per categoria:</h3>
       <ul>
         <li>Carrozzeria: {groupCounts.carrozzeria}</li>
@@ -270,7 +276,7 @@ const CarDimensionAndColorCounter: React.FC = () => {
           groupCounts.gomme * 2}{" "}
         kg
       </p>
-      {dimensions && additionalMetrics && weight && (
+      {dimensions && additionalMetrics && weight && balance && (
         <>
           <p>
             <strong>Rapporto lunghezza/passo:</strong>{" "}
@@ -291,7 +297,8 @@ const CarDimensionAndColorCounter: React.FC = () => {
             {calcolaManovrabilita(
               additionalMetrics.wheelbase,
               additionalMetrics.centerOfMassHeight,
-              weight
+              weight,
+              balance
             ).toFixed(2)}
           </p>
         </>
@@ -301,8 +308,3 @@ const CarDimensionAndColorCounter: React.FC = () => {
 };
 
 export default CarDimensionAndColorCounter;
-
-/* input: (passo: 24, altezza: 8.85) output 600
-input: (passo: 23, altezza: 10.40) output 500
-input: (passo: 23.24, altezza: 19.08) output 250
-input: (passo: 35.50, altezza:  7.81) output: 150 */
