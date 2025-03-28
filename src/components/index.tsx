@@ -29,21 +29,9 @@ const CarDimensionAndColorCounter: React.FC = () => {
     useState<AdditionalMetrics | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Set di colori per ciascuna categoria (tutti in lowercase)
-  const carrozzeriaColors = new Set([
-    "#e23838",
-    "#c41212",
-    "#9b0707",
-    "#4bc034",
-    "#258f0f",
-    "#1a6c09",
-    "#2c2ca4",
-    "#141480",
-    "#060753",
-  ]);
   const vetroColors = new Set(["#d8fdfe", "#a7e2e4"]);
   // I pixel delle gomme sono quelli neri, normalizzati a "#000"
-  const gommeColors = new Set(["#000"]);
+  const gommeColors = new Set(["#000", "#2d2b2b", "#504e4e"]);
 
   // Funzione per convertire un componente in una stringa esadecimale a due cifre
   const componentToHex = (c: number): string => {
@@ -96,19 +84,12 @@ const CarDimensionAndColorCounter: React.FC = () => {
         // Variabili per la carrozzeria
         let minX = canvas.width;
         let maxX = 0;
-        // minY: punto più alto della carrozzeria (pixel con y minima)
         let minY = canvas.height;
-        // maxY: punto più basso della carrozzeria (pixel con y massima)
         let maxY = 0;
-        // Per il centro di massa: somma delle coordinate y dei pixel della carrozzeria
         let sumCarrozzeriaY = 0;
-
-        // Per stimare il bordo frontale, definiamo un array che memorizza per ogni riga (y)
-        // la coordinata x massima dei pixel della carrozzeria
         const frontEdge = new Array<number>(canvas.height).fill(-1);
 
-        // Array per raccogliere le coordinate x dei pixel delle gomme,
-        // separati in base alla metà del canvas
+        // Array per raccogliere le coordinate x dei pixel delle gomme, separati in base alla metà del canvas
         const leftWheelX: number[] = [];
         const rightWheelX: number[] = [];
 
@@ -134,7 +115,21 @@ const CarDimensionAndColorCounter: React.FC = () => {
           const x = pixelIndex % canvas.width;
           const y = Math.floor(pixelIndex / canvas.width);
 
-          if (carrozzeriaColors.has(hexColor)) {
+          // Gestisci i colori delle gomme
+          if (gommeColors.has(hexColor)) {
+            counts.gomme++;
+            if (x < canvas.width / 2) {
+              leftWheelX.push(x);
+            } else {
+              rightWheelX.push(x);
+            }
+          }
+          // Gestisci i colori del vetro
+          else if (vetroColors.has(hexColor)) {
+            counts.vetro++;
+          }
+          // Se non è né gomme né vetro, consideriamolo come carrozzeria
+          else {
             counts.carrozzeria++;
             sumCarrozzeriaY += y;
             if (x < minX) minX = x;
@@ -143,16 +138,6 @@ const CarDimensionAndColorCounter: React.FC = () => {
             if (y > maxY) maxY = y;
             // Aggiorna il bordo frontale (il lato destro, quindi x massimo per ogni y)
             frontEdge[y] = Math.max(frontEdge[y], x);
-          } else if (vetroColors.has(hexColor)) {
-            counts.vetro++;
-          } else if (gommeColors.has(hexColor)) {
-            counts.gomme++;
-            // Se il pixel della gomma è a sinistra o a destra della metà del canvas
-            if (x < canvas.width / 2) {
-              leftWheelX.push(x);
-            } else {
-              rightWheelX.push(x);
-            }
           }
         }
 
@@ -163,13 +148,11 @@ const CarDimensionAndColorCounter: React.FC = () => {
           setDimensions({ width: 0, height: 0 });
         } else {
           const width = maxX - minX;
-          // L'altezza viene calcolata dalla base del canvas (terra) fino al punto più alto della carrozzeria
           const height = canvas.height - minY;
           setDimensions({ width, height });
         }
 
-        // Calcola la distanza della carrozzeria da terra:
-        // è la distanza dal pixel più basso della carrozzeria al bordo inferiore del canvas
+        // Calcola la distanza della carrozzeria da terra
         const carrozzeriaDistanceFromGround = canvas.height - maxY;
 
         // Calcola il "passo" (wheelbase) stimando il centro delle ruote
@@ -182,8 +165,7 @@ const CarDimensionAndColorCounter: React.FC = () => {
           wheelbase = Math.abs(rightCenter - leftCenter);
         }
 
-        // Calcola l'altezza del centro di massa della carrozzeria:
-        // come la distanza dal bordo inferiore del canvas alla media delle y dei pixel della carrozzeria
+        // Calcola l'altezza del centro di massa della carrozzeria
         let centerOfMassHeight = 0;
         if (counts.carrozzeria > 0) {
           const avgY = sumCarrozzeriaY / counts.carrozzeria;
@@ -191,9 +173,6 @@ const CarDimensionAndColorCounter: React.FC = () => {
         }
 
         // Stima del coefficiente aerodinamico (Cd)
-        // Analizziamo il bordo frontale della carrozzeria:
-        // Per ogni riga (da minY a maxY) che contiene pixel carrozzeria, prendiamo la posizione x massima (frontEdge).
-        // Calcoliamo le differenze assolute tra righe adiacenti per avere una misura della "pendenza" del bordo.
         const slopes: number[] = [];
         for (let y = minY; y < maxY; y++) {
           if (frontEdge[y] !== -1 && frontEdge[y + 1] !== -1) {
@@ -204,10 +183,6 @@ const CarDimensionAndColorCounter: React.FC = () => {
           slopes.length > 0
             ? slopes.reduce((acc, v) => acc + v, 0) / slopes.length
             : 0;
-        // Utilizziamo una semplice mappatura:
-        // Se avgSlope <= 1 => Cd = 0.35 (meno aerodinamico)
-        // Se avgSlope >= 5 => Cd = 0.25 (più aerodinamico)
-        // Altrimenti interpoliamo linearmente
         let aerodynamicCoefficient = 0.35;
         if (avgSlope <= 1) {
           aerodynamicCoefficient = 0.35;
