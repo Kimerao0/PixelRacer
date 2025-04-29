@@ -19,7 +19,7 @@ interface RaceCar {
   activeUpgrades: Upgrade[];
 }
 
-export interface Player {
+export interface RaceTeam {
   name: string;
   credits: number;
   cars: RaceCar[];

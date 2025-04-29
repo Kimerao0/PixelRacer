@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Button, Grid2, styled, Typography } from "@mui/material";
-import { Player } from "../../dto";
+import { RaceTeam } from "../../dto";
 import PlayerCard from "../PlayerCard";
 import CreatePlayerModal from "../CreatePlayerModal";
 import ImageColorCounter from "..";
 
 const CarsHandler: React.FC = () => {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<RaceTeam[]>([]);
   const [createPlayerModalIsOpen, setCreatePlayerModalIsOpen] = useState(false);
 
   return (
