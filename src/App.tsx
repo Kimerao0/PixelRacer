@@ -1,24 +1,29 @@
-import React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import React, { useState } from "react";
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, styled } from "@mui/material";
-import CarsHandler from "./components/CarsHandler";
+import MainSection from "./sections/MainSection";
+import theme from "./style/theme";
+import TeamsSection from "./sections/TeamsSection";
 
-const theme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#1976d2",
-    },
-  },
-});
+export type SiteSection = "main" | "teams" | "race";
 
 const App: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<SiteSection>("main");
+
+  const returnComponentBasedOnSection = () => {
+    switch (activeSection) {
+      case "main":
+        return <MainSection setActiveSection={setActiveSection} />;
+      case "teams":
+        return <TeamsSection setActiveSection={setActiveSection} />;
+      case "race":
+        return <p>Race page</p>;
+    }
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <MainWrapper>
-        <CarsHandler />
-      </MainWrapper>
+      <MainWrapper>{returnComponentBasedOnSection()}</MainWrapper>
     </ThemeProvider>
   );
 };
@@ -31,6 +36,6 @@ const MainWrapper = styled("div")({
   display: `flex`,
   justifyContent: `center`,
   alignItems: `center`,
-  backgroundColor: `#242424`,
-  color: `#ffffff`,
+  backgroundColor: `#F3E9D7`,
+  color: `#585858`,
 });
