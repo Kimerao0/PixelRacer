@@ -1,26 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
-import { calcolaVelocitaMassima } from "../functions/topspeed";
-import { calcolaManovrabilita } from "../functions/maneuverability";
+import CarData from "./components/CarData";
 
-interface CarDimensions {
+export interface CarDimensions {
   width: number;
   height: number;
 }
 
-interface GroupCounts {
+export interface GroupCounts {
   carrozzeria: number;
   vetro: number;
   gomme: number;
 }
 
-interface AdditionalMetrics {
+export interface AdditionalMetrics {
   carrozzeriaDistanceFromGround: number;
   wheelbase: number;
   centerOfMassHeight: number;
   aerodynamicCoefficient: number;
 }
 
-const CarDimensionAndColorCounter: React.FC = () => {
+const CarUploader: React.FC = () => {
   const [dimensions, setDimensions] = useState<CarDimensions | null>(null);
   const [groupCounts, setGroupCounts] = useState<GroupCounts>({
     carrozzeria: 0,
@@ -219,92 +218,20 @@ const CarDimensionAndColorCounter: React.FC = () => {
 
   return (
     <div>
-      <h2>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h2>
+      <h4>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h4>
       <input type="file" accept="image/png" onChange={handleImageUpload} />
       <canvas ref={canvasRef} style={{ display: "none" }} />
-      {dimensions && (
-        <div>
-          <p>
-            <strong>Larghezza carrozzeria:</strong> {dimensions.width} pixel
-          </p>
-          <p>
-            <strong>Altezza auto:</strong> {dimensions.height} pixel
-          </p>
-        </div>
-      )}
-      {additionalMetrics && (
-        <div>
-          <p>
-            <strong>Distanza carrozzeria da terra:</strong>{" "}
-            {additionalMetrics.carrozzeriaDistanceFromGround} pixel
-          </p>
-          <p>
-            <strong>Passo (wheelbase):</strong>{" "}
-            {additionalMetrics.wheelbase.toFixed(2)} pixel
-          </p>
-          <p>
-            <strong>Altezza del centro di massa:</strong>{" "}
-            {additionalMetrics.centerOfMassHeight.toFixed(2)} pixel
-          </p>
-          <p>
-            <strong>Coefficiente aerodinamico stimato (Cd):</strong>{" "}
-            {additionalMetrics.aerodynamicCoefficient.toFixed(3)}
-          </p>
-        </div>
-      )}
-      {balance !== null && (
-        <p>
-          <strong>Bilanciamento retro/fronte:</strong> {balance.toFixed(2)} (
-          {balance > 1
-            ? "sbilanciata verso il retro"
-            : balance < 1
-            ? "sbilanciata verso il fronte"
-            : "bilanciata"}
-          )
-        </p>
-      )}
-      <h3>Conteggio per categoria:</h3>
-      <ul>
-        <li>Carrozzeria: {groupCounts.carrozzeria}</li>
-        <li>Vetro: {groupCounts.vetro}</li>
-        <li>Gomme: {groupCounts.gomme}</li>
-      </ul>
-      <p>
-        <strong>Peso:</strong>{" "}
-        {groupCounts.carrozzeria * 3 +
-          groupCounts.vetro * 0.5 +
-          groupCounts.gomme * 2}{" "}
-        kg
-      </p>
       {dimensions && additionalMetrics && weight && balance && (
-        <>
-          <p>
-            <strong>Rapporto lunghezza/passo:</strong>{" "}
-            {(dimensions.width / additionalMetrics.wheelbase).toFixed(2)}
-          </p>
-          <p>
-            <strong>Velocità massima:</strong>{" "}
-            {calcolaVelocitaMassima(
-              dimensions.width / additionalMetrics.wheelbase,
-              weight,
-              additionalMetrics.carrozzeriaDistanceFromGround,
-              additionalMetrics.aerodynamicCoefficient
-            ).toFixed(2)}{" "}
-            km/h
-          </p>
-          <p>
-            <strong>Manovrabilità:</strong>{" "}
-            {calcolaManovrabilita(
-              additionalMetrics.wheelbase,
-              additionalMetrics.centerOfMassHeight,
-              weight,
-              balance
-            ).toFixed(2)}
-          </p>
-        </>
+        <CarData
+          dimensions={dimensions}
+          additionalMetrics={additionalMetrics}
+          balance={balance}
+          groupCounts={groupCounts}
+          weight={weight}
+        />
       )}
     </div>
   );
 };
 
-export default CarDimensionAndColorCounter;
+export default CarUploader;

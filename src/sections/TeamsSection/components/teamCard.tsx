@@ -5,14 +5,11 @@ import {
   CardHeader,
   Typography,
   Avatar,
-  Grid,
   Box,
   Chip,
   Divider,
-  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { RaceTeam } from "../../../dto";
 import { getInitials } from "../../../functions/stringsManipulation";
 import { Link } from "react-router-dom";
@@ -36,58 +33,66 @@ const TeamCard: React.FC<RaceTeam> = ({ name, cars, credits, upgrades }) => {
           <Typography variant="subtitle1" gutterBottom>
             Cars
           </Typography>
-          <Grid container spacing={2}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "1fr 1fr",
+              },
+              gap: 2,
+            }}
+          >
             {cars.map((car, index) => (
-              <Grid item xs={12} md={6} key={index}>
-                <Box
-                  sx={{
-                    border: "1px solid #585858",
-                    borderRadius: 2,
-                    padding: 2,
-                    backgroundColor: "#fff",
-                  }}
-                >
-                  <Typography variant="subtitle2" color="primary">
-                    {car.name}
+              <Box
+                key={index}
+                sx={{
+                  border: "1px solid #585858",
+                  borderRadius: 2,
+                  padding: 2,
+                  backgroundColor: "#fff",
+                }}
+              >
+                <Typography variant="subtitle2" color="primary">
+                  {car.name}
+                </Typography>
+                <img
+                  src={car.image}
+                  alt={car.name}
+                  style={{ width: "100%", borderRadius: 8, marginTop: 8 }}
+                />
+                <Box mt={1}>
+                  <Typography variant="caption" display="block">
+                    Status: {car.status}%
                   </Typography>
-                  <img
-                    src={car.image}
-                    alt={car.name}
-                    style={{ width: "100%", borderRadius: 8, marginTop: 8 }}
-                  />
-                  <Box mt={1}>
-                    <Typography variant="caption" display="block">
-                      Status: {car.status}%
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      Top Speed: {car.stats.topSpeed}
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      Maneuverability: {car.stats.maneuverability}
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      Durability: {car.stats.durability}
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      Acceleration: {car.stats.acceleration}
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      Offroad: {car.stats.offroad}
-                    </Typography>
-                  </Box>
-                  <Box mt={1}>
-                    {car.activeUpgrades.map((upgrade, idx) => (
-                      <Chip
-                        key={idx}
-                        label={upgrade.name}
-                        sx={{ bgcolor: "#63A46C", color: "#fff", m: 0.5 }}
-                      />
-                    ))}
-                  </Box>
+                  <Typography variant="caption" display="block">
+                    Top Speed: {car.stats.topSpeed}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Maneuverability: {car.stats.maneuverability}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Durability: {car.stats.durability}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Acceleration: {car.stats.acceleration}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Offroad: {car.stats.offroad}
+                  </Typography>
                 </Box>
-              </Grid>
+                <Box mt={1}>
+                  {car.activeUpgrades.map((upgrade, idx) => (
+                    <Chip
+                      key={idx}
+                      label={upgrade.name}
+                      sx={{ bgcolor: "#63A46C", color: "#fff", m: 0.5 }}
+                    />
+                  ))}
+                </Box>
+              </Box>
             ))}
-          </Grid>
+          </Box>
 
           <Divider sx={{ my: 2 }} />
 
