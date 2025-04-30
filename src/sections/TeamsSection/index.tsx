@@ -4,6 +4,8 @@ import { Button, styled } from "@mui/material";
 import { Column, Row } from "../../style";
 import CreateTeamForm from "./components/createTeamForm";
 import { RaceTeam } from "../../dto";
+import TeamCard from "./components/teamCard";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const TeamsSection: React.FC<{
   setActiveSection: React.Dispatch<React.SetStateAction<SiteSection>>;
@@ -11,10 +13,11 @@ const TeamsSection: React.FC<{
   setTeams: React.Dispatch<React.SetStateAction<RaceTeam[]>>;
 }> = ({ setActiveSection, teams, setTeams }) => {
   const [createModeOn, setCreateModeOn] = useState<boolean>(false);
+
   return (
     <TeamsSectionWrapper>
       <Column>
-        <h3>Gestione delle squadre:</h3>
+        <h2>Gestione delle squadre:</h2>
         <Row>
           <Button
             variant="contained"
@@ -24,13 +27,6 @@ const TeamsSection: React.FC<{
           >
             Aggiungi una squadra
           </Button>{" "}
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => setActiveSection("main")}
-          >
-            Torna al menu principale
-          </Button>
         </Row>
         {createModeOn && (
           <CreateTeamForm
@@ -40,19 +36,28 @@ const TeamsSection: React.FC<{
           />
         )}
         {teams.length > 0 ? (
-          <Row>
+          <Row sx={{ pt: 8, gap: 4 }}>
             {teams.map((team) => (
-              <div key={team.name}>
-                <h4>{team.name}</h4>
-                <p>Crediti: {team.credits}</p>
-                <p>Auto: {team.cars.length}</p>
-                <p>Upgrades: {team.upgrades.length}</p>
-              </div>
+              <TeamCard
+                key={team.name}
+                name={team.name}
+                credits={team.credits}
+                cars={team.cars}
+                upgrades={team.upgrades}
+              />
             ))}
           </Row>
         ) : (
           <p>Nessuna squadra disponibile.</p>
         )}
+        <Button
+          variant="outlined"
+          size="large"
+          sx={{ maxWidth: `200px`, marginTop: `48px` }}
+          onClick={() => setActiveSection("main")}
+        >
+          <ArrowBackIosIcon sx={{ fontSize: 20 }} /> Torna alla home
+        </Button>
       </Column>
     </TeamsSectionWrapper>
   );
@@ -61,8 +66,8 @@ const TeamsSection: React.FC<{
 export default TeamsSection;
 
 const TeamsSectionWrapper = styled("div")({
-  width: `100vw`,
-  height: `100vh`,
+  width: `100%`,
+  height: `100%`,
   display: `flex`,
   justifyContent: `center`,
   alignItems: `center`,

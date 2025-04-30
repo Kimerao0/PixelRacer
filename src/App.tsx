@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, styled } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainSection from "./sections/MainSection";
-import theme from "./style/theme";
 import TeamsSection from "./sections/TeamsSection";
+import theme from "./style/theme";
 import { RaceTeam } from "./dto";
+import EditTeamPage from "./sections/TeamsSection/components/editTeamPage";
+import Header from "./components/Header";
 
 export type SiteSection = "main" | "teams" | "race";
 
@@ -31,10 +34,22 @@ const App: React.FC = () => {
         return <p>Race page</p>;
     }
   };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <MainWrapper>{returnComponentBasedOnSection()}</MainWrapper>
+      <Router>
+        <Header />
+        <MainWrapper>
+          <Routes>
+            <Route path="/" element={returnComponentBasedOnSection()} />
+            <Route
+              path="/teams/:teamName"
+              element={<EditTeamPage teams={teams} setTeams={setTeams} />}
+            />
+          </Routes>
+        </MainWrapper>
+      </Router>
     </ThemeProvider>
   );
 };
@@ -43,7 +58,7 @@ export default App;
 
 const MainWrapper = styled("div")({
   width: `100vw`,
-  height: `100vh`,
+  height: `calc(100vh - 50px)`,
   display: `flex`,
   justifyContent: `center`,
   alignItems: `center`,

@@ -14,8 +14,8 @@ const CreateTeamForm: React.FC<{
   };
 
   const handleCreateTeam = () => {
-    if (teamName.trim() === "") {
-      alert("Please enter a team name.");
+    if (teamName.trim() === "" || teamName.trim().length < 4) {
+      alert("Please enter a team name longer than 3 letters.");
       return;
     }
 
@@ -40,7 +40,14 @@ const CreateTeamForm: React.FC<{
 
   return (
     <Box
-      sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 4, pb: 4 }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        pt: 4,
+        pb: 4,
+        maxWidth: 456,
+      }}
     >
       <TextField
         label="Nome Team"
