@@ -95,7 +95,7 @@ const CarData: React.FC<CarDataProps> = ({
         <DataSection title="Composizione">
           <Typography>Carrozzeria: {groupCounts.carrozzeria}px</Typography>
           <Typography>Vetro: {groupCounts.vetro}px</Typography>
-          <Typography>Gomme: {groupCounts.gomme}px</Typography>
+          <Typography>Pneumatici: {groupCounts.gomme}px</Typography>
           <Typography mt={1}>
             Peso totale:{" "}
             {groupCounts.carrozzeria * 3 +
@@ -110,6 +110,10 @@ const CarData: React.FC<CarDataProps> = ({
             <Typography>
               Rapporto lunghezza/passo:{" "}
               {(dimensions.width / additionalMetrics.wheelbase).toFixed(2)}
+            </Typography>
+            <Typography>
+              Rapporto massa carrozzeria/pneumatici:{" "}
+              {((weight / groupCounts.gomme) * 2).toFixed(2)}
             </Typography>
           </DataSection>
         )}

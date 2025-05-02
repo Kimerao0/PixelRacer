@@ -39,9 +39,13 @@ function calcolaOutput(input: number): number {
 }
 
 export function calcolaVelocitaMassima(
+  // rapporto lunghezza auto / passo
   rlp: number,
+  // peso del veicolo
   ps: number,
+  // distanza carrozzeria da terra
   dds: number,
+  // coefficiente aerodinamico
   cda: number
 ): number {
   // Velocità di riferimento
