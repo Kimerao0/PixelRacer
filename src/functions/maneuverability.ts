@@ -10,21 +10,26 @@ function mapRange(
 
 export function calcolaManovrabilita(
   passo: number,
+  // altezza centro di massa
   altezza: number,
   peso: number,
   balance: number
 ): number {
   // Verifica che i parametri siano nei range previsti
   if (passo < 5 || passo > 40) {
+    alert("Il valore del passo deve essere compreso tra 5 e 40.");
     throw new Error("Il valore del passo deve essere compreso tra 5 e 40.");
   }
   if (altezza < 5 || altezza > 30) {
+    alert("Il valore dell'altezza deve essere compreso tra 5 e 30.");
     throw new Error("Il valore dell'altezza deve essere compreso tra 5 e 30.");
   }
   if (peso < 500 || peso > 2500) {
+    alert("Il valore del peso deve essere compreso tra 500 e 2500.");
     throw new Error("Il valore del peso deve essere compreso tra 500 e 2500.");
   }
   if (balance < 0.5 || balance > 2) {
+    alert("Il valore del balance deve essere compreso tra 0.5 e 2.");
     throw new Error("Il valore del balance deve essere compreso tra 0.5 e 2.");
   }
 
