@@ -26,9 +26,7 @@ const AddCarModal: React.FC<{
     >
       <DialogTitle>Aggiungi una nuova macchina</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          <CarUploader />
-        </DialogContentText>
+        <CarUploader />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpenAddCarModal(false)} color="primary">
