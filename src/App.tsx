@@ -8,6 +8,7 @@ import theme from "./style/theme";
 import { RaceTeam } from "./dto";
 import EditTeamPage from "./sections/TeamsSection/components/editTeamPage";
 import Header from "./components/Header";
+import RaceTrackPage from "./sections/TrackSection/RaceTrackPage";
 
 export type SiteSection = "main" | "teams" | "race";
 
@@ -46,6 +47,10 @@ const App: React.FC = () => {
             <Route
               path="/teams/:teamName"
               element={<EditTeamPage teams={teams} setTeams={setTeams} />}
+            />
+            <Route
+              path="/track/:trackId"
+              element={<RaceTrackPage teams={teams} setTeams={setTeams} />}
             />
           </Routes>
         </MainWrapper>
