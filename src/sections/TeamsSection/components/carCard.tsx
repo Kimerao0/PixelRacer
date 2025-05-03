@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Row } from "../../../style";
 import {
   calculateAccelerationPerTick,
-  calculateSpeed,
+  calculateTopSpeed,
 } from "../../../functions/racefns";
 
 const CarCard: React.FC<{
@@ -13,11 +13,11 @@ const CarCard: React.FC<{
   car: RaceCar;
   handleCarDelete?: (carName: string) => void;
 }> = ({ index, car, handleCarDelete }) => {
-  const turnSpeed = calculateSpeed(
+  const turnSpeed = calculateTopSpeed(
     car.stats.topSpeed,
     car.stats.maneuverability
   );
-  const offSpeed = calculateSpeed(car.stats.topSpeed, car.stats.offroad);
+  const offSpeed = calculateTopSpeed(car.stats.topSpeed, car.stats.offroad);
   const accPerTick = calculateAccelerationPerTick(car.stats.acceleration);
   return (
     <Box
@@ -56,6 +56,7 @@ const CarCard: React.FC<{
       />
       <Box mt={1}>
         {[
+          { title: "Status:", value: car.status },
           { title: "Top Speed:", value: car.stats.topSpeed },
           { title: "Maneuverability:", value: car.stats.maneuverability },
           { title: "Acceleration:", value: car.stats.acceleration },

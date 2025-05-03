@@ -29,6 +29,7 @@ const CreateTeamForm: React.FC<{
       credits: 100,
       cars: [],
       upgrades: [],
+      punti: 0,
     };
 
     const updatedTeams = [...teams, newTeam];

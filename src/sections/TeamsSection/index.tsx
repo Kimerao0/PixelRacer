@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { SiteSection } from "../../App";
 import { Button, styled } from "@mui/material";
 import { Column, Row } from "../../style";
 import CreateTeamForm from "./components/createTeamForm";
 import { RaceTeam } from "../../dto";
 import TeamCard from "./components/teamCard";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { useGoHome } from "../../hooks/useGoHome";
 
 const TeamsSection: React.FC<{
-  setActiveSection: React.Dispatch<React.SetStateAction<SiteSection>>;
   teams: RaceTeam[];
   setTeams: React.Dispatch<React.SetStateAction<RaceTeam[]>>;
-}> = ({ setActiveSection, teams, setTeams }) => {
+}> = ({ teams, setTeams }) => {
   const [createModeOn, setCreateModeOn] = useState<boolean>(false);
+
+  const goHome = useGoHome();
 
   return (
     <TeamsSectionWrapper>
@@ -36,7 +37,7 @@ const TeamsSection: React.FC<{
           />
         )}
         {teams.length > 0 ? (
-          <Row sx={{ pt: 2, gap: 4 }}>
+          <Row sx={{ pt: 4, gap: 4, flexWrap: `wrap` }}>
             {teams.map((team) => (
               <TeamCard
                 key={team.name}
@@ -44,6 +45,7 @@ const TeamsSection: React.FC<{
                 credits={team.credits}
                 cars={team.cars}
                 upgrades={team.upgrades}
+                punti={team.punti}
               />
             ))}
           </Row>
@@ -54,7 +56,7 @@ const TeamsSection: React.FC<{
           variant="outlined"
           size="large"
           sx={{ maxWidth: `200px`, marginTop: `48px` }}
-          onClick={() => setActiveSection("main")}
+          onClick={() => goHome()}
         >
           <ArrowBackIosIcon sx={{ fontSize: 20 }} /> Torna alla home
         </Button>

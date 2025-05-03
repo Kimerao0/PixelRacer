@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { RaceTeam } from "../../../dto";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useGoHome } from "../../../hooks/useGoHome";
 import { Column, Row } from "../../../style";
 import DeleteTeamModal from "./deleteTeamModal";
 import AddCarModal from "./addCarModal";
@@ -20,10 +19,9 @@ const EditTeamPage: React.FC<Props> = ({ teams, setTeams }) => {
 
   const { teamName } = useParams<{ teamName: string }>();
   const team = teams.find((t) => t.name === teamName);
-  const goHome = useGoHome();
-
+  const navigate = useNavigate();
   if (!team) {
-    goHome();
+    navigate("/teams");
     return <p>Team not found</p>;
   }
 

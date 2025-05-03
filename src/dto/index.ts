@@ -24,4 +24,5 @@ export interface RaceTeam {
   credits: number;
   cars: RaceCar[];
   upgrades: Upgrade[];
+  punti: number;
 }

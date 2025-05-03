@@ -9,32 +9,13 @@ import { RaceTeam } from "./dto";
 import EditTeamPage from "./sections/TeamsSection/components/editTeamPage";
 import Header from "./components/Header";
 import RaceTrackPage from "./sections/TrackSection/RaceTrackPage";
-
-export type SiteSection = "main" | "teams" | "race";
+import RacePage from "./sections/RaceSection/RacePage";
 
 const App: React.FC = () => {
   const teamsFromLocalStorage = localStorage.getItem("teams");
-  const [activeSection, setActiveSection] = useState<SiteSection>("main");
   const [teams, setTeams] = useState<RaceTeam[]>(
     teamsFromLocalStorage ? JSON.parse(teamsFromLocalStorage) : []
   );
-
-  const returnComponentBasedOnSection = () => {
-    switch (activeSection) {
-      case "main":
-        return <MainSection setActiveSection={setActiveSection} />;
-      case "teams":
-        return (
-          <TeamsSection
-            setActiveSection={setActiveSection}
-            teams={teams}
-            setTeams={setTeams}
-          />
-        );
-      case "race":
-        return <p>Race page</p>;
-    }
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -43,7 +24,15 @@ const App: React.FC = () => {
         <Header />
         <MainWrapper>
           <Routes>
-            <Route path="/" element={returnComponentBasedOnSection()} />
+            <Route path="/" element={<MainSection />} />
+            <Route
+              path="/race"
+              element={<RacePage teams={teams} setTeams={setTeams} />}
+            />
+            <Route
+              path="/teams"
+              element={<TeamsSection teams={teams} setTeams={setTeams} />}
+            />
             <Route
               path="/teams/:teamName"
               element={<EditTeamPage teams={teams} setTeams={setTeams} />}
