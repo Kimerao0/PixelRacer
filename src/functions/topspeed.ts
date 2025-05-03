@@ -63,6 +63,7 @@ export function calcolaVelocitaMassima(
 
   const output = calcolaOutput(velocitaMax);
   if (output > 700) return 700;
+  if (output < 0) return 10;
 
   return output;
 }

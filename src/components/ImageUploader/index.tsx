@@ -10,6 +10,8 @@ export interface GroupCounts {
   carrozzeria: number;
   vetro: number;
   gomme: number;
+  gommeLeft: number; // Nuovo: pixel della gomma sinistra
+  gommeRight: number; // Nuovo: pixel della gomma destra
 }
 
 export interface AdditionalMetrics {
@@ -25,11 +27,13 @@ const CarUploader: React.FC = () => {
     carrozzeria: 0,
     vetro: 0,
     gomme: 0,
+    gommeLeft: 0,
+    gommeRight: 0,
   });
   const [additionalMetrics, setAdditionalMetrics] =
     useState<AdditionalMetrics | null>(null);
   const [weight, setWeight] = useState<number | null>(null);
-  const [balance, setBalance] = useState<number | null>(null); // 🆕 Nuovo stato
+  const [balance, setBalance] = useState<number | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -93,10 +97,12 @@ const CarUploader: React.FC = () => {
           carrozzeria: 0,
           vetro: 0,
           gomme: 0,
+          gommeLeft: 0,
+          gommeRight: 0,
         };
 
-        let frontCarrozzeriaPixels = 0; // 🆕
-        let backCarrozzeriaPixels = 0; // 🆕
+        let frontCarrozzeriaPixels = 0;
+        let backCarrozzeriaPixels = 0;
 
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
@@ -114,8 +120,10 @@ const CarUploader: React.FC = () => {
           if (gommeColors.has(hexColor)) {
             counts.gomme++;
             if (x < canvas.width / 2) {
+              counts.gommeLeft++; // incremento gomma sinistra
               leftWheelX.push(x);
             } else {
+              counts.gommeRight++; // incremento gomma destra
               rightWheelX.push(x);
             }
           } else if (vetroColors.has(hexColor)) {
@@ -129,7 +137,6 @@ const CarUploader: React.FC = () => {
             if (y > maxY) maxY = y;
             frontEdge[y] = Math.max(frontEdge[y], x);
 
-            // 🆕 Calcolo bilanciamento
             if (x < canvas.width / 2) {
               backCarrozzeriaPixels++;
             } else {
@@ -190,7 +197,7 @@ const CarUploader: React.FC = () => {
           centerOfMassHeight,
           aerodynamicCoefficient,
         });
-        // 🆕 Calcolo finale bilanciamento
+
         const total = frontCarrozzeriaPixels + backCarrozzeriaPixels;
         if (total > 0) {
           const balanceValue = backCarrozzeriaPixels / frontCarrozzeriaPixels;

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Paper, LinearProgress } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { AdditionalMetrics, CarDimensions, GroupCounts } from "..";
 import { calcolaVelocitaMassima } from "../../../functions/topspeed";
 import { calcolaManovrabilita } from "../../../functions/maneuverability";
 import { DataSection } from "./DataSection";
 import ProgressData from "./ProgressData";
+import { calculateAcceleration } from "../../../functions/acceleration";
+import { calculateOffRoad } from "../../../functions/offroad";
+import { calculateDurability } from "../../../functions/durability";
 
 interface CarDataProps {
   dimensions: CarDimensions;
@@ -23,6 +26,9 @@ const CarData: React.FC<CarDataProps> = ({
 }) => {
   const [maxSpeed, setMaxSpeed] = useState<string>("");
   const [maxManeuverability, setMaxManeuverability] = useState<string>("");
+  const [acceleration, setAcceleration] = useState<string>("");
+  const [offRoad, setOffRoad] = useState<string>("");
+  const [durability, setDurability] = useState<string>("");
 
   useEffect(() => {
     const _ms = calcolaVelocitaMassima(
@@ -39,6 +45,26 @@ const CarData: React.FC<CarDataProps> = ({
       balance
     ).toFixed(2);
     setMaxManeuverability(_mm);
+    const totalVolume =
+      groupCounts.carrozzeria + groupCounts.vetro + groupCounts.gomme;
+    const _acc = calculateAcceleration({
+      weight,
+      rearTyreVolumeRatio: totalVolume / groupCounts.gommeLeft,
+      aerodynamicCoefficient: additionalMetrics.aerodynamicCoefficient,
+    }).toFixed(2);
+    setAcceleration(_acc);
+    const _off = calculateOffRoad({
+      ddt: additionalMetrics.carrozzeriaDistanceFromGround,
+      vty: groupCounts.gomme,
+      balance,
+    }).toFixed(2);
+    setOffRoad(_off);
+    const _dur = calculateDurability({
+      ddt: additionalMetrics.carrozzeriaDistanceFromGround,
+      vty: groupCounts.gomme,
+      weight,
+    }).toFixed(2);
+    setDurability(_dur);
   }, [dimensions, additionalMetrics, weight, balance]);
 
   return (
@@ -51,7 +77,7 @@ const CarData: React.FC<CarDataProps> = ({
       }}
     >
       {/* Colonna sinistra */}
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+      <Box sx={{ p: 3 }}>
         {dimensions && (
           <DataSection title="Dimensioni">
             <Typography>Larghezza carrozzeria: {dimensions.width}px</Typography>
@@ -112,15 +138,15 @@ const CarData: React.FC<CarDataProps> = ({
               {(dimensions.width / additionalMetrics.wheelbase).toFixed(2)}
             </Typography>
             <Typography>
-              Rapporto massa carrozzeria/pneumatici:{" "}
-              {((weight / groupCounts.gomme) * 2).toFixed(2)}
+              Rapporto volume gomme posteriori/anteriori:{" "}
+              {(groupCounts.gommeLeft / groupCounts.gommeRight).toFixed(2)}
             </Typography>
           </DataSection>
         )}
-      </Paper>
+      </Box>
 
       {/* Colonna destra */}
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+      <Box sx={{ p: 3, borderLeft: "1px solid #ccc" }}>
         {dimensions && additionalMetrics && weight && balance && (
           <>
             <DataSection title="Statistiche">
@@ -132,10 +158,19 @@ const CarData: React.FC<CarDataProps> = ({
                 title={`Manovrabilità: ${maxManeuverability}`}
                 value={maxManeuverability}
               />
+              <ProgressData
+                title={`Acceleration: ${acceleration}`}
+                value={acceleration}
+              />
+              <ProgressData title={`Offroad: ${offRoad}`} value={offRoad} />
+              <ProgressData
+                title={`Durability: ${durability}`}
+                value={durability}
+              />
             </DataSection>
           </>
         )}
-      </Paper>
+      </Box>
     </Box>
   );
 };
