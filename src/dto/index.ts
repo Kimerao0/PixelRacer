@@ -5,15 +5,15 @@ interface Upgrade {
   duration: number;
 }
 
-interface RaceCar {
+export interface RaceCar {
   name: string;
   image: string;
   stats: {
     topSpeed: number;
     maneuverability: number;
+    offroad: number;
     durability: number;
     acceleration: number;
-    offroad: number;
   };
   status: number;
   activeUpgrades: Upgrade[];

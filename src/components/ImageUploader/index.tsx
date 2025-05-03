@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import CarData from "./components/CarData";
+import { Column } from "../../style";
+import { RaceCar } from "../../dto";
 
 export interface CarDimensions {
   width: number;
@@ -21,7 +23,9 @@ export interface AdditionalMetrics {
   aerodynamicCoefficient: number;
 }
 
-const CarUploader: React.FC = () => {
+const CarUploader: React.FC<{
+  setCarData: React.Dispatch<React.SetStateAction<RaceCar | null>>;
+}> = ({ setCarData }) => {
   const [dimensions, setDimensions] = useState<CarDimensions | null>(null);
   const [groupCounts, setGroupCounts] = useState<GroupCounts>({
     carrozzeria: 0,
@@ -34,6 +38,7 @@ const CarUploader: React.FC = () => {
     useState<AdditionalMetrics | null>(null);
   const [weight, setWeight] = useState<number | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  const [carImg, setCarImg] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -82,6 +87,8 @@ const CarUploader: React.FC = () => {
         ctx.drawImage(img, 0, 0);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
+        const dataUrl = canvas.toDataURL("image/png");
+        setCarImg(dataUrl);
 
         let minX = canvas.width;
         let maxX = 0;
@@ -226,15 +233,27 @@ const CarUploader: React.FC = () => {
   return (
     <div>
       <h4>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h4>
-      <input type="file" accept="image/png" onChange={handleImageUpload} />
-      <canvas ref={canvasRef} style={{ display: "none" }} />
-      {dimensions && additionalMetrics && weight && balance && (
+      <Column>
+        <input type="file" accept="image/png" onChange={handleImageUpload} />
+        <canvas ref={canvasRef} style={{ display: "none" }} />
+        {carImg && (
+          <img
+            src={carImg}
+            alt={`Car image`}
+            style={{ width: 160, height: 80 }}
+          />
+        )}
+      </Column>
+
+      {dimensions && additionalMetrics && weight && balance && carImg && (
         <CarData
           dimensions={dimensions}
           additionalMetrics={additionalMetrics}
           balance={balance}
           groupCounts={groupCounts}
           weight={weight}
+          carImg={carImg}
+          setCarData={setCarData}
         />
       )}
     </div>

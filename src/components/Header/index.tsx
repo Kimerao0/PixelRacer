@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   return (
-    <div style={{ height: 50, backgroundColor: "#F0544F", width: "100vw" }}>
+    <div style={{ height: 50, backgroundColor: "#F0544F", width: "100%" }}>
       <Link to="/" style={{ textDecoration: "none" }}>
         <h1 style={{ color: "#fff", textAlign: "center", margin: 0 }}>
           PixelRacer

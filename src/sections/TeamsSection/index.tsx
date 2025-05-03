@@ -16,7 +16,7 @@ const TeamsSection: React.FC<{
 
   return (
     <TeamsSectionWrapper>
-      <Column>
+      <Column style={{ padding: 24 }}>
         <h2>Gestione delle squadre:</h2>
         <Row>
           <Button
@@ -36,7 +36,7 @@ const TeamsSection: React.FC<{
           />
         )}
         {teams.length > 0 ? (
-          <Row sx={{ pt: 8, gap: 4 }}>
+          <Row sx={{ pt: 2, gap: 4 }}>
             {teams.map((team) => (
               <TeamCard
                 key={team.name}

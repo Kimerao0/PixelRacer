@@ -57,8 +57,9 @@ const App: React.FC = () => {
 export default App;
 
 const MainWrapper = styled("div")({
-  width: `100vw`,
-  height: `calc(100vh - 50px)`,
+  width: `100%`,
+  minHeight: "calc(100vh - 50px)",
+  height: `100%`,
   display: `flex`,
   justifyContent: `center`,
   alignItems: `center`,

@@ -53,7 +53,11 @@ const TeamCard: React.FC<RaceTeam> = ({ name, cars, credits, upgrades }) => {
                   backgroundColor: "#fff",
                 }}
               >
-                <Typography variant="subtitle2" color="primary">
+                <Typography
+                  variant="h4"
+                  color="primary"
+                  sx={{ fontSize: 14, fontWeight: 600 }}
+                >
                   {car.name}
                 </Typography>
                 <img
@@ -63,22 +67,23 @@ const TeamCard: React.FC<RaceTeam> = ({ name, cars, credits, upgrades }) => {
                 />
                 <Box mt={1}>
                   <Typography variant="caption" display="block">
-                    Status: {car.status}%
+                    <strong>Top Speed:</strong> {car.stats.topSpeed}
                   </Typography>
                   <Typography variant="caption" display="block">
-                    Top Speed: {car.stats.topSpeed}
+                    <strong>Maneuverability:</strong>{" "}
+                    {car.stats.maneuverability}
                   </Typography>
                   <Typography variant="caption" display="block">
-                    Maneuverability: {car.stats.maneuverability}
+                    <strong>Acceleration:</strong> {car.stats.acceleration}
                   </Typography>
                   <Typography variant="caption" display="block">
-                    Durability: {car.stats.durability}
+                    <strong>Offroad:</strong> {car.stats.offroad}
                   </Typography>
                   <Typography variant="caption" display="block">
-                    Acceleration: {car.stats.acceleration}
+                    <strong>Durability:</strong> {car.stats.durability}
                   </Typography>
                   <Typography variant="caption" display="block">
-                    Offroad: {car.stats.offroad}
+                    <strong>Status:</strong> {car.status}%
                   </Typography>
                 </Box>
                 <Box mt={1}>

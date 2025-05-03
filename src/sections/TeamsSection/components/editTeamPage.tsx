@@ -26,6 +26,8 @@ const EditTeamPage: React.FC<Props> = ({ teams, setTeams }) => {
     return <p>Team not found</p>;
   }
 
+  console.log("team", team);
+
   return (
     <>
       <Column>
@@ -58,10 +60,15 @@ const EditTeamPage: React.FC<Props> = ({ teams, setTeams }) => {
           setTeams={setTeams}
         />
       )}
-      <AddCarModal
-        openAddCarModal={openAddCarModal}
-        setOpenAddCarModal={setOpenAddCarModal}
-      />
+      {teamName && (
+        <AddCarModal
+          teamName={teamName}
+          teams={teams}
+          setTeams={setTeams}
+          openAddCarModal={openAddCarModal}
+          setOpenAddCarModal={setOpenAddCarModal}
+        />
+      )}
     </>
   );
 };
