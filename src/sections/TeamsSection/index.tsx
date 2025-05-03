@@ -26,7 +26,7 @@ const TeamsSection: React.FC<{
             onClick={() => setCreateModeOn(true)}
           >
             Aggiungi una squadra
-          </Button>{" "}
+          </Button>
         </Row>
         {createModeOn && (
           <CreateTeamForm

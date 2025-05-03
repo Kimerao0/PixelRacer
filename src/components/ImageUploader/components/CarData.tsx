@@ -42,14 +42,14 @@ const CarData: React.FC<CarDataProps> = ({
       weight,
       additionalMetrics.carrozzeriaDistanceFromGround,
       additionalMetrics.aerodynamicCoefficient
-    ).toFixed(2);
+    ).toFixed(0);
     setMaxSpeed(_ms);
     const _mm = calcolaManovrabilita(
       additionalMetrics.wheelbase,
       additionalMetrics.centerOfMassHeight,
       weight,
       balance
-    ).toFixed(2);
+    ).toFixed(0);
     setMaxManeuverability(_mm);
     const totalVolume =
       groupCounts.carrozzeria + groupCounts.vetro + groupCounts.gomme;
@@ -57,19 +57,19 @@ const CarData: React.FC<CarDataProps> = ({
       weight,
       rearTyreVolumeRatio: totalVolume / groupCounts.gommeLeft,
       aerodynamicCoefficient: additionalMetrics.aerodynamicCoefficient,
-    }).toFixed(2);
+    }).toFixed(0);
     setAcceleration(_acc);
     const _off = calculateOffRoad({
       ddt: additionalMetrics.carrozzeriaDistanceFromGround,
       vty: groupCounts.gomme,
       balance,
-    }).toFixed(2);
+    }).toFixed(0);
     setOffRoad(_off);
     const _dur = calculateDurability({
       ddt: additionalMetrics.carrozzeriaDistanceFromGround,
       vty: groupCounts.gomme,
       weight,
-    }).toFixed(2);
+    }).toFixed(0);
     setDurability(_dur);
     setCarData({
       name: carName,

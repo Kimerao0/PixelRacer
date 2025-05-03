@@ -13,6 +13,7 @@ import { styled } from "@mui/material/styles";
 import { RaceTeam } from "../../../dto";
 import { getInitials } from "../../../functions/stringsManipulation";
 import { Link } from "react-router-dom";
+import CarCard from "./carCard";
 
 const TeamCard: React.FC<RaceTeam> = ({ name, cars, credits, upgrades }) => {
   return (
@@ -44,58 +45,7 @@ const TeamCard: React.FC<RaceTeam> = ({ name, cars, credits, upgrades }) => {
             }}
           >
             {cars.map((car, index) => (
-              <Box
-                key={index}
-                sx={{
-                  border: "1px solid #585858",
-                  borderRadius: 2,
-                  padding: 2,
-                  backgroundColor: "#fff",
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  color="primary"
-                  sx={{ fontSize: 14, fontWeight: 600 }}
-                >
-                  {car.name}
-                </Typography>
-                <img
-                  src={car.image}
-                  alt={car.name}
-                  style={{ width: "100%", borderRadius: 8, marginTop: 8 }}
-                />
-                <Box mt={1}>
-                  <Typography variant="caption" display="block">
-                    <strong>Top Speed:</strong> {car.stats.topSpeed}
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    <strong>Maneuverability:</strong>{" "}
-                    {car.stats.maneuverability}
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    <strong>Acceleration:</strong> {car.stats.acceleration}
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    <strong>Offroad:</strong> {car.stats.offroad}
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    <strong>Durability:</strong> {car.stats.durability}
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    <strong>Status:</strong> {car.status}%
-                  </Typography>
-                </Box>
-                <Box mt={1}>
-                  {car.activeUpgrades.map((upgrade, idx) => (
-                    <Chip
-                      key={idx}
-                      label={upgrade.name}
-                      sx={{ bgcolor: "#63A46C", color: "#fff", m: 0.5 }}
-                    />
-                  ))}
-                </Box>
-              </Box>
+              <CarCard key={index} index={index} car={car} />
             ))}
           </Box>
 

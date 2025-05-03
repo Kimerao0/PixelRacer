@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { RaceTeam } from "../../../dto";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,6 +7,7 @@ import { useGoHome } from "../../../hooks/useGoHome";
 import { Column, Row } from "../../../style";
 import DeleteTeamModal from "./deleteTeamModal";
 import AddCarModal from "./addCarModal";
+import CarCard from "./carCard";
 
 type Props = {
   teams: RaceTeam[];
@@ -26,7 +27,15 @@ const EditTeamPage: React.FC<Props> = ({ teams, setTeams }) => {
     return <p>Team not found</p>;
   }
 
-  console.log("team", team);
+  const handleCarDelete = (carName: string) => {
+    const updatedCars = team.cars.filter((car) => car.name !== carName);
+    const updatedTeam = { ...team, cars: updatedCars };
+    const updatedTeams = teams.map((t) =>
+      t.name === teamName ? updatedTeam : t
+    );
+    setTeams(updatedTeams);
+    localStorage.setItem("teams", JSON.stringify(updatedTeams));
+  };
 
   return (
     <>
@@ -50,25 +59,46 @@ const EditTeamPage: React.FC<Props> = ({ teams, setTeams }) => {
         >
           Aggiungi auto
         </Button>
+        {teamName && (
+          <DeleteTeamModal
+            teamName={teamName}
+            openDeleteModal={openDeleteModal}
+            setOpenDeleteModal={setOpenDeleteModal}
+            teams={teams}
+            setTeams={setTeams}
+          />
+        )}
+        {teamName && (
+          <AddCarModal
+            teamName={teamName}
+            teams={teams}
+            setTeams={setTeams}
+            openAddCarModal={openAddCarModal}
+            setOpenAddCarModal={setOpenAddCarModal}
+          />
+        )}
+        {team.cars.length > 0 && (
+          <>
+            <Typography
+              variant="h4"
+              color="primary"
+              sx={{ fontSize: 20, fontWeight: 600, mt: 4, mb: 2 }}
+            >
+              Auto del team:
+            </Typography>
+            <Row>
+              {team.cars.map((car, index) => (
+                <CarCard
+                  key={index}
+                  index={index}
+                  car={car}
+                  handleCarDelete={handleCarDelete}
+                />
+              ))}
+            </Row>
+          </>
+        )}
       </Column>
-      {teamName && (
-        <DeleteTeamModal
-          teamName={teamName}
-          openDeleteModal={openDeleteModal}
-          setOpenDeleteModal={setOpenDeleteModal}
-          teams={teams}
-          setTeams={setTeams}
-        />
-      )}
-      {teamName && (
-        <AddCarModal
-          teamName={teamName}
-          teams={teams}
-          setTeams={setTeams}
-          openAddCarModal={openAddCarModal}
-          setOpenAddCarModal={setOpenAddCarModal}
-        />
-      )}
     </>
   );
 };
