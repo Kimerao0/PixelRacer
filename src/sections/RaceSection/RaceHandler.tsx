@@ -169,7 +169,7 @@ const RaceHandler: React.FC<{
               >
                 {c.finalPosition}
               </strong>
-              <span>{c.car.name}</span>
+
               <span>
                 {c.car.name} ({getTeamName(c.car, teams)})
               </span>
