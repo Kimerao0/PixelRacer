@@ -57,3 +57,59 @@ export const getTeamName = (car: RaceCar, teams: RaceTeam[]): string => {
   const team = teams.find((t) => t.cars.some((c) => c.name === car.name));
   return team ? team.name : "—";
 };
+
+export function deterioramentoStatusAuto(
+  velocita: number,
+  status: number,
+  durability: number
+): number {
+  // Clampiamo gli input ai range minimi/massimi ammessi
+  const s = Math.max(0, Math.min(100, status));
+  const d = Math.max(1, durability); // almeno 1 per evitare divisione per zero
+
+  // Fattore base di decadimento proporzionale a velocità/durability
+  const decayFactor = velocita / 2 / d;
+
+  // Costante di scala: più piccola = decadimento più dolce
+  const SCALE = 0.2;
+
+  // Decadimento “base”
+  const decay = decayFactor * SCALE;
+
+  // Applichiamo il decadimento e rimettiamo il risultato nel range [0,100], formattiamo a 3 decimali
+  const newStatus = s - decay;
+  return Math.round(Math.max(0, Math.min(100, newStatus)) * 1000) / 1000;
+}
+
+export function calcolaPuntiGara(n: number): number[] {
+  if (n < 1) {
+    return [];
+  }
+
+  const punti: number[] = new Array(n).fill(0);
+
+  // all’ultimo partecipante (posizione n) assegniamo 0 punti
+  punti[n - 1] = 0;
+
+  // risaliamo dalla penultima posizione (n-1) fino alla prima (1)
+  for (let idx = n - 2; idx >= 0; idx--) {
+    const posizione = idx + 1; // 1-based
+
+    // differenza di punti rispetto al successivo
+    const delta = posizione <= 3 ? 2 : 1;
+
+    punti[idx] = punti[idx + 1] + delta;
+  }
+
+  return punti;
+}
+
+export function boostedTeamsPostRace(teams: RaceTeam[]): RaceTeam[] {
+  return teams.map((team) => ({
+    ...team,
+    cars: team.cars.map((car) => ({
+      ...car,
+      status: car.status + 10 > 100 ? 100 : car.status + 10,
+    })),
+  }));
+}

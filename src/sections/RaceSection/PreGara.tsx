@@ -1,5 +1,4 @@
 import React from "react";
-import { RaceTeam } from "../../dto";
 import { tracks } from "../../data/tracks";
 import { RaceState } from "./RacePage";
 import { Button } from "@mui/material";
@@ -11,6 +10,35 @@ export interface GaraElProps {
   teams: RaceTeam[];
   currentTrack: number;
   setRaceState: React.Dispatch<React.SetStateAction<RaceState>>;
+}
+
+interface Upgrade {
+  name: string;
+  description: string;
+  cost: number;
+  duration: number;
+}
+
+export interface RaceCar {
+  name: string;
+  image: string;
+  stats: {
+    topSpeed: number;
+    maneuverability: number;
+    offroad: number;
+    durability: number;
+    acceleration: number;
+  };
+  status: number;
+  activeUpgrades: Upgrade[];
+}
+
+export interface RaceTeam {
+  name: string;
+  credits: number;
+  cars: RaceCar[];
+  upgrades: Upgrade[];
+  punti: number;
 }
 
 const PreGara: React.FC<GaraElProps> = ({
@@ -31,11 +59,11 @@ const PreGara: React.FC<GaraElProps> = ({
           <strong>Classifica corrente: </strong>
         </p>
         <ul style={{ listStyle: "decimal" }}>
-          {teams
-            .sort((a, b) => a.punti - b.punti)
+          {[...teams]
+            .sort((a, b) => b.punti - a.punti)
             .map((team) => (
               <li key={team.name}>
-                {team.name} {team.punti}
+                {team.name}, {team.punti}
               </li>
             ))}
         </ul>
