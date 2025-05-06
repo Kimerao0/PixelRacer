@@ -3,7 +3,7 @@ import { RaceTeam } from "../../dto";
 import { useNavigate, useParams } from "react-router-dom";
 import { tracks } from "../../data/tracks";
 import DrawTrack from "./drawTrack";
-import { Row } from "../../style";
+import { Column, Row } from "../../style";
 import { Button } from "@mui/material";
 
 type Props = {
@@ -54,12 +54,12 @@ const RaceTrackPage: React.FC<Props> = () => {
   }, [trackId]);
 
   return (
-    <div>
+    <Column sx={{ padding: 4, maxWidth: 1600 }}>
       <h2>{track.name}</h2>
       <img
         src={track.image}
         alt={track.name}
-        style={{ width: "auto", height: "275px" }}
+        style={{ width: "fit-content", height: "275px" }}
       />
       <p>{track.description}</p>
       <div>
@@ -72,20 +72,20 @@ const RaceTrackPage: React.FC<Props> = () => {
       >
         <h3>Statistiche del tracciato:</h3>
         <p>
-          <strong>Lunghezza tracciato: </strong>
-          {track.tiles.length}
+          <strong>Lunghezza totale: </strong>
+          {track.tiles.length}km
         </p>
         <p>
           <strong>Rettilinei: </strong>
-          {straight}
+          {straight}km
         </p>
         <p>
           <strong>Curve: </strong>
-          {turn}
+          {turn}km
         </p>
         <p>
           <strong>Sezioni Offroad: </strong>
-          {offroad}
+          {offroad}km
         </p>
       </div>
       <Row
@@ -103,7 +103,7 @@ const RaceTrackPage: React.FC<Props> = () => {
           Pista successiva
         </Button>
       </Row>
-    </div>
+    </Column>
   );
 };
 

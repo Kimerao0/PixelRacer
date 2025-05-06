@@ -94,7 +94,7 @@ const RacePage: React.FC<Props> = ({ teams, setTeams }) => {
   };
 
   return (
-    <Column>
+    <Column sx={{ padding: 4, maxWidth: 1600 }}>
       {renderByState()}
 
       {/* Pulsante per aprire la modale di conferma */}

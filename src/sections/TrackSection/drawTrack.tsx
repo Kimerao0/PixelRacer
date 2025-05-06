@@ -47,7 +47,7 @@ const TrackWrapper = styled("div")({
   gap: "10px 5px",
   width: "100%",
   height: "100%",
-  paddingTop: "50px",
+  paddingTop: "30px",
   minWidth: 1420,
 });
 const Tile = styled("div")({

@@ -6,7 +6,7 @@ export const track_2: RaceTrack = {
   image: VortexImg,
   trackId: "2",
   description:
-    "Attraversa le sabbie roventi di Desert Vortex: un lungo rettilineo iniziale seguito da sezioni offroad insidiose e curve larghe e sabbiose che mettono alla prova aderenza e controllo.",
+    "Nel cuore del deserto ardente, Desert Vortex si snoda tra polverose distese e sabbia infuocata. Dopo un lungo rettilineo iniziale che consente di spingere al massimo, i piloti devono affrontare sezioni offroad instabili e curve impegnative che spezzano il ritmo. La pista alterna velocità e tecnica, sfidando i nervi tra dune e vento tagliente. Solo chi saprà adattarsi alla natura imprevedibile del deserto potrà dominare questa corsa estrema.",
   tiles: [
     // Rettilineo iniziale (molto lungo)
     { terrain: "straight" },
