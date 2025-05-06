@@ -49,6 +49,14 @@ const PreGara: React.FC<GaraElProps> = ({
   const goHome = useGoHome();
   return (
     <Column sx={{ padding: 4 }}>
+      <Button
+        variant="outlined"
+        size="large"
+        sx={{ maxWidth: `200px`, marginBottom: `24px` }}
+        onClick={() => goHome()}
+      >
+        <ArrowBackIosIcon sx={{ fontSize: 20 }} /> Torna alla home
+      </Button>
       <h3>Inizia gara {currentTrack}</h3>
       {tracks[currentTrack - 1] && (
         <>
@@ -61,6 +69,10 @@ const PreGara: React.FC<GaraElProps> = ({
             alt="Immagine Pista"
             style={{ width: 300 }}
           />
+          <p>
+            <strong>Descrizione: </strong>
+            {tracks[currentTrack - 1].description}
+          </p>
         </>
       )}
       <div>
@@ -86,14 +98,6 @@ const PreGara: React.FC<GaraElProps> = ({
         }}
       >
         Inizia gara
-      </Button>
-      <Button
-        variant="outlined"
-        size="large"
-        sx={{ maxWidth: `200px`, marginTop: `48px` }}
-        onClick={() => goHome()}
-      >
-        <ArrowBackIosIcon sx={{ fontSize: 20 }} /> Torna alla home
       </Button>
     </Column>
   );

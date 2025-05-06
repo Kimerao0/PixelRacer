@@ -107,7 +107,6 @@ const RacePage: React.FC<Props> = ({ teams, setTeams }) => {
             marginTop: 5,
             width: 184,
             marginLeft: "auto",
-            marginRight: "auto",
             padding: "6px 14px",
           }}
         >

@@ -221,6 +221,8 @@ const RaceHandler: React.FC<{
 
   return (
     <Column>
+      <h2>Pista: {track.name}</h2>
+      <img src={track.image} alt="Immagine Pista" style={{ width: 300 }} />
       <h3>Velocità gara:</h3>
       <Row>
         <SpeedButton variant="contained" onClick={() => setSpeed(250)}>
