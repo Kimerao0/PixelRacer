@@ -50,10 +50,19 @@ const PreGara: React.FC<GaraElProps> = ({
   return (
     <Column sx={{ padding: 4 }}>
       <h3>Inizia gara {currentTrack}</h3>
-      <p>
-        <strong>Pista: </strong>
-        {tracks[currentTrack - 1].name}
-      </p>
+      {tracks[currentTrack - 1] && (
+        <>
+          <p>
+            <strong>Pista: </strong>
+            {tracks[currentTrack - 1].name}
+          </p>
+          <img
+            src={tracks[currentTrack - 1].image}
+            alt="Immagine Pista"
+            style={{ width: 300 }}
+          />
+        </>
+      )}
       <div>
         <p>
           <strong>Classifica corrente: </strong>

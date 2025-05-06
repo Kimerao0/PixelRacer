@@ -109,7 +109,7 @@ export function boostedTeamsPostRace(teams: RaceTeam[]): RaceTeam[] {
     ...team,
     cars: team.cars.map((car) => ({
       ...car,
-      status: car.status + 10 > 100 ? 100 : car.status + 10,
+      status: car.status + 5 > 100 ? 100 : car.status + 5,
     })),
   }));
 }

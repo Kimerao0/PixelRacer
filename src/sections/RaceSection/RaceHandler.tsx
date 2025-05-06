@@ -38,7 +38,7 @@ const RaceHandler: React.FC<{
   setRaceState: React.Dispatch<React.SetStateAction<RaceState>>;
 }> = ({ cars, currentTrack, teams, setTeams, setRaceState }) => {
   const initialCarState: CarRaceState[] = cars.map((car) => ({
-    car: car,
+    car,
     meters: 1,
     currentSpeed: 1,
     finalPosition: null,
@@ -71,17 +71,14 @@ const RaceHandler: React.FC<{
       const resultsToAdd: RaceResult[] = [];
 
       const updated = prev.map((carState) => {
-        // se ha già finalPosition, non facciamo nulla
         if (carState.finalPosition !== null) return carState;
 
-        // applica il deterioramento dello status
         const newStatus = deterioramentoStatusAuto(
           carState.currentSpeed,
           carState.car.status,
           carState.car.stats.durability
         );
 
-        // se lo status scende a zero o sotto, la macchina si ferma
         if (newStatus <= 0) {
           return {
             ...carState,
@@ -90,7 +87,6 @@ const RaceHandler: React.FC<{
           };
         }
 
-        // calcolo tile, limiter e topSpeed come prima
         const tileIdx = Math.floor(carState.meters / 1000);
         const currentTile = track.tiles[tileIdx] ?? track.tiles[0];
         const limiter = getCarLimiter(carState.car, currentTile.terrain);
@@ -107,12 +103,9 @@ const RaceHandler: React.FC<{
         );
         const newMeters = carState.meters + newSpeed;
 
-        // se supera il traguardo
         if (newMeters >= finishLine) {
           const position = alreadyFinishedCount + resultsToAdd.length + 1;
-          // aggiungiamo il risultato alla lista temporanea
           resultsToAdd.push({ car: carState.car, position });
-          // blocchiamo la macchina al traguardo
           return {
             ...carState,
             car: { ...carState.car, status: newStatus },
@@ -122,7 +115,6 @@ const RaceHandler: React.FC<{
           };
         }
 
-        // altrimenti proseguiamo normalmente
         return {
           ...carState,
           car: { ...carState.car, status: newStatus },
@@ -135,41 +127,42 @@ const RaceHandler: React.FC<{
     });
   };
 
+  // Effetto per determinare la fine gara e assegnare le posizioni mancanti
   useEffect(() => {
-    if (raceIsOver) {
-      return;
-    }
-    const interval = setInterval(handleTick, speed);
-    // Cleanup quando il componente viene smontato
-    return () => clearInterval(interval);
-  }, [speed, raceIsOver]);
-
-  useEffect(() => {
-    // fine gara quando tutte le macchine hanno fermato (per status=0 o arrivo)
+    if (raceIsOver) return;
+    // La gara è finita quando tutte le macchine hanno finalPosition o sono ferme
     if (
       carsRaceState.every(
         (c) => c.finalPosition !== null || c.currentSpeed === 0
       )
     ) {
-      console.log("Gara finita!");
+      // Assegna le posizioni anche alle auto ferme, in base ai metri percorsi
+      setCarsRaceState((prev) => {
+        // Ordina: prima quelle con finalPosition, poi le altre per metri
+        const sorted = [...prev].sort((a, b) => {
+          if (a.finalPosition !== null && b.finalPosition !== null)
+            return a.finalPosition - b.finalPosition;
+          if (a.finalPosition !== null) return -1;
+          if (b.finalPosition !== null) return 1;
+          return b.meters - a.meters;
+        });
+        // Mappa nome auto -> posizione finale
+        const namePosMap = new Map<string, number>();
+        sorted.forEach((cs, idx) => {
+          namePosMap.set(cs.car.name, idx + 1);
+        });
+        // Aggiorna solo quelle senza finalPosition
+        return prev.map((cs) => ({
+          ...cs,
+          finalPosition:
+            cs.finalPosition !== null
+              ? cs.finalPosition
+              : namePosMap.get(cs.car.name)!,
+        }));
+      });
       setRaceIsOver(true);
     }
-  }, [carsRaceState]);
-
-  // Calcolo del podio: se ci sono finalPosition li uso, altrimenti ordino per metri percorsi
-  const podium = carsRaceState
-    .slice()
-    .sort((a, b) => {
-      if (a.finalPosition !== null && b.finalPosition !== null)
-        return a.finalPosition - b.finalPosition;
-      if (a.finalPosition !== null) return -1;
-      if (b.finalPosition !== null) return 1;
-      return b.meters - a.meters;
-    })
-    .map((c, idx) => ({
-      carState: c,
-      position: c.finalPosition ?? idx + 1,
-    }));
+  }, [carsRaceState, raceIsOver]);
 
   const handleRaceIsOver = () => {
     // aggiorna lo stato delle macchine nel team
@@ -193,11 +186,8 @@ const RaceHandler: React.FC<{
         }),
       };
     });
-    console.log("updatedTeams", updatedTeams);
     const boostedTeams = boostedTeamsPostRace(updatedTeams);
-    console.log("boostedTeams", boostedTeams);
     setTeams(boostedTeams);
-    // aggiorna il localStorage
     localStorage.setItem("teams", JSON.stringify(boostedTeams));
     // resetta lo stato della gara
     setCarsRaceState((prev) =>
@@ -214,6 +204,20 @@ const RaceHandler: React.FC<{
     );
     setRaceState("fine gara");
   };
+
+  useEffect(() => {
+    if (raceIsOver) {
+      return;
+    }
+    const interval = setInterval(handleTick, speed);
+    return () => clearInterval(interval);
+  }, [speed, raceIsOver]);
+
+  // Calcolo del podio: ordina per finalPosition (assegnata a tutti)
+  const podium = carsRaceState
+    .slice()
+    .sort((a, b) => (a.finalPosition || 0) - (b.finalPosition || 0))
+    .map((c) => ({ carState: c, position: c.finalPosition! }));
 
   return (
     <Column>
