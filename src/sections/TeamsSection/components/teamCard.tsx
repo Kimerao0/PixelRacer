@@ -58,7 +58,7 @@ const TeamCard: React.FC<RaceTeam> = ({ name, cars, credits, upgrades }) => {
             {upgrades.map((upgrade, index) => (
               <Chip
                 key={index}
-                label={`${upgrade.name} ($${upgrade.cost})`}
+                label={`${upgrade.name} (x${upgrade.quantity})`}
                 sx={{ bgcolor: "#F0544F", color: "#fff" }}
               />
             ))}

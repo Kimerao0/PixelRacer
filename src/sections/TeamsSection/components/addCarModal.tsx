@@ -51,7 +51,7 @@ const AddCarModal: React.FC<{
     setOpenAddCarModal(false);
     alert("Car added to team successfully!");
   };
-  console.log("carData", carData);
+
   return (
     <Dialog
       open={openAddCarModal}

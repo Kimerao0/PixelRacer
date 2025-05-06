@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RaceCar, RaceTeam } from "../../dto";
+import { RaceCar, RaceTeam, Upgrade, UpgradeName } from "../../dto";
 import { tracks } from "../../data/tracks";
 import { Column, Row } from "../../style";
 import { Button, styled } from "@mui/material";
@@ -12,6 +12,7 @@ import {
   getCarLimiter,
   getPodiumEmoji,
   getTeamName,
+  returnValueInBoundaries,
   neverGoOverTopSpeed,
 } from "../../functions/racefns";
 import DrawTrack from "../TrackSection/drawTrack";
@@ -23,6 +24,7 @@ export interface CarRaceState {
   currentSpeed: number;
   finalPosition: number | null;
   bonusLuck: number;
+  upgrade: UpgradeName | null;
 }
 
 interface RaceResult {
@@ -43,6 +45,7 @@ const RaceHandler: React.FC<{
     currentSpeed: 1,
     finalPosition: null,
     bonusLuck: 0,
+    upgrade: car.activeUpgrades[0]?.name || null,
   }));
   const [speed, setSpeed] = useState(250);
   const [carsRaceState, setCarsRaceState] =
@@ -73,10 +76,32 @@ const RaceHandler: React.FC<{
       const updated = prev.map((carState) => {
         if (carState.finalPosition !== null) return carState;
 
+        const isCarSpeedUpdated = carState.upgrade === "hyper-speed";
+        const isCarsAccelerationUpdated = carState.upgrade === "rocket";
+        const isCarOffroadUpdated = carState.upgrade === "suspensions";
+        const isCarManuberabilityUpdated = carState.upgrade === "precision";
+        const isCarDurabilityUpdated = carState.upgrade === "shield";
+        const isCarStatusUpdatedBy30 = carState.upgrade === "repair30";
+        const isCarStatusUpdatedBy60 = carState.upgrade === "repair60";
+
+        const carStatus = isCarStatusUpdatedBy30
+          ? returnValueInBoundaries(carState.car.status + 30)
+          : isCarStatusUpdatedBy60
+          ? returnValueInBoundaries(carState.car.status + 60)
+          : carState.car.status;
+
+        const carDurability = isCarDurabilityUpdated
+          ? returnValueInBoundaries(carState.car.stats.durability + 150)
+          : carState.car.stats.durability;
+
+        const carTopSpeed = isCarSpeedUpdated
+          ? returnValueInBoundaries(carState.car.stats.topSpeed + 100)
+          : carState.car.stats.topSpeed;
+
         const newStatus = deterioramentoStatusAuto(
           carState.currentSpeed,
-          carState.car.status,
-          carState.car.stats.durability
+          carStatus,
+          carDurability
         );
 
         if (newStatus <= 0) {
@@ -89,16 +114,21 @@ const RaceHandler: React.FC<{
 
         const tileIdx = Math.floor(carState.meters / 1000);
         const currentTile = track.tiles[tileIdx] ?? track.tiles[0];
-        const limiter = getCarLimiter(carState.car, currentTile.terrain);
-        const topSpeed = calculateTopSpeed(
-          carState.car.stats.topSpeed,
-          limiter
+        const limiter = getCarLimiter(
+          carState.car,
+          currentTile.terrain,
+          isCarOffroadUpdated,
+          isCarManuberabilityUpdated
         );
+        const topSpeed = calculateTopSpeed(carTopSpeed, limiter);
 
         const newSpeed = neverGoOverTopSpeed(
           carState.currentSpeed +
             carState.bonusLuck +
-            calculateAccelerationPerTick(carState.car.stats.acceleration),
+            calculateAccelerationPerTick(
+              carState.car.stats.acceleration,
+              isCarsAccelerationUpdated
+            ),
           topSpeed
         );
         const newMeters = carState.meters + newSpeed;
@@ -165,13 +195,32 @@ const RaceHandler: React.FC<{
   }, [carsRaceState, raceIsOver]);
 
   const handleRaceIsOver = () => {
-    // aggiorna lo stato delle macchine nel team
     const updatedTeams = carsRaceState.map((carState): RaceTeam => {
       const teamName = getTeamName(carState.car, teams);
       const team = teams.find((t) => t.name === teamName) as RaceTeam;
       const puntiQuestaGara = calcolaPuntiGara(carsRaceState.length)[
         (carState.finalPosition || 1) - 1
       ];
+
+      const upgradeUsato = carState.car.activeUpgrades[0]?.name;
+
+      const updatedUpgrades = team.upgrades
+        .map((upg) => {
+          if (upg.name === upgradeUsato) {
+            const newQuantity = upg.quantity - 1;
+            if (newQuantity <= 0) {
+              // Rimuoviamo l'upgrade se esaurito
+              return null;
+            }
+            return {
+              ...upg,
+              quantity: newQuantity,
+            };
+          }
+          return upg;
+        })
+        .filter((upg): upg is Upgrade => upg !== null); // Rimuove i null (quindi gli upgrade esauriti)
+
       return {
         ...team,
         punti: team.punti + puntiQuestaGara,
@@ -184,11 +233,14 @@ const RaceHandler: React.FC<{
           }
           return car;
         }),
+        upgrades: updatedUpgrades,
       };
     });
+
     const boostedTeams = boostedTeamsPostRace(updatedTeams);
     setTeams(boostedTeams);
     localStorage.setItem("teams", JSON.stringify(boostedTeams));
+
     // resetta lo stato della gara
     setCarsRaceState((prev) =>
       prev.map((carState) => ({

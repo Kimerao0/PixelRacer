@@ -1,6 +1,11 @@
-import { RaceTrack, Terrain } from "../data/tracks";
+import { Terrain } from "../data/tracks";
 import { RaceCar, RaceTeam } from "../dto";
-import { CarRaceState } from "../sections/RaceSection/RaceHandler";
+
+export const returnValueInBoundaries = (value: number): number => {
+  if (value < 0) return 0;
+  if (value > 700) return 700;
+  return value;
+};
 
 export function calculateTopSpeed(topSpeed: number, limiter: number): number {
   const ratio = limiter / 700;
@@ -9,11 +14,15 @@ export function calculateTopSpeed(topSpeed: number, limiter: number): number {
   return roundedSpeed > limiter ? limiter : roundedSpeed;
 }
 
-export function calculateAccelerationPerTick(acceleration: number): number {
+export function calculateAccelerationPerTick(
+  acceleration: number,
+  isCarsAccelerationUpdated: boolean
+): number {
   if (acceleration < 10) acceleration = 10;
   if (acceleration > 700) acceleration = 700;
+  const acc = isCarsAccelerationUpdated ? acceleration + 150 : acceleration;
 
-  const ratio = (acceleration - 10) / (700 - 10);
+  const ratio = (acc - 10) / (700 - 10);
   const result = 1 + ratio * (70 - 1);
 
   return Math.round(result);
@@ -28,12 +37,19 @@ export function neverGoOverTopSpeed(
   return currentSpeed;
 }
 
-export const getCarLimiter = (car: RaceCar, terrain: Terrain) => {
+export const getCarLimiter = (
+  car: RaceCar,
+  terrain: Terrain,
+  isCarOffroadUpdated: boolean,
+  isCarManuberabilityUpdated: boolean
+) => {
   switch (terrain) {
     case "offroad":
-      return car.stats.offroad;
+      return isCarOffroadUpdated ? car.stats.offroad + 150 : car.stats.offroad;
     case "turn":
-      return car.stats.maneuverability;
+      return isCarManuberabilityUpdated
+        ? car.stats.maneuverability + 150
+        : car.stats.maneuverability;
     default:
       return 700;
   }
