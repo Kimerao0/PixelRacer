@@ -9,6 +9,7 @@ import { calculateAcceleration } from "../../../functions/acceleration";
 import { calculateOffRoad } from "../../../functions/offroad";
 import { calculateDurability } from "../../../functions/durability";
 import { RaceCar } from "../../../dto";
+import { Row } from "../../../style";
 
 interface CarDataProps {
   dimensions: CarDimensions;
@@ -30,6 +31,7 @@ const CarData: React.FC<CarDataProps> = ({
   setCarData,
 }) => {
   const [carName, setCarName] = useState<string>("");
+  const [carPrice, setCarPrice] = useState<number>(0);
   const [maxSpeed, setMaxSpeed] = useState<string>("");
   const [maxManeuverability, setMaxManeuverability] = useState<string>("");
   const [acceleration, setAcceleration] = useState<string>("");
@@ -73,6 +75,7 @@ const CarData: React.FC<CarDataProps> = ({
     setDurability(_dur);
     setCarData({
       name: carName,
+      carPrice: carPrice,
       image: carImg,
       stats: {
         topSpeed: Number(_ms),
@@ -84,22 +87,34 @@ const CarData: React.FC<CarDataProps> = ({
       status: 100,
       activeUpgrades: [],
     });
-  }, [dimensions, additionalMetrics, weight, balance, carName]);
+  }, [dimensions, additionalMetrics, weight, balance, carName, carPrice]);
 
   const handleCarNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCarName(event.target.value);
   };
+  const handleCarPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCarPrice(Number(event.target.value));
+  };
 
   return (
     <>
-      <TextField
-        label="Nome Auto"
-        value={carName}
-        onChange={handleCarNameChange}
-        variant="outlined"
-        sx={{ mt: 4, maxWidth: 400 }}
-      />
-
+      <Row sx={{ mt: 4, p: 3 }}>
+        <TextField
+          label="Nome Auto"
+          value={carName}
+          onChange={handleCarNameChange}
+          variant="outlined"
+          sx={{ maxWidth: 400 }}
+        />
+        <TextField
+          label="Prezzo Auto"
+          value={carPrice}
+          type="number"
+          onChange={handleCarPrice}
+          variant="outlined"
+          sx={{ ml: 2, maxWidth: 400 }}
+        />
+      </Row>
       <Box
         sx={{
           display: "grid",

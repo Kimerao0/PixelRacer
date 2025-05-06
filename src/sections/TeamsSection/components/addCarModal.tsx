@@ -34,6 +34,13 @@ const AddCarModal: React.FC<{
       alert("Car with the same name already exists in the team!");
       return;
     }
+    currentTeam.credits -= carData.carPrice;
+
+    if (currentTeam.credits < 0) {
+      alert("Not enough credits to add this car!");
+      currentTeam.credits += carData.carPrice; // revert the credit deduction
+      return;
+    }
     currentTeam.cars.push(carData);
     const updatedTeams = teams.map((team) =>
       team.name === teamName ? currentTeam : team
@@ -44,6 +51,7 @@ const AddCarModal: React.FC<{
     setOpenAddCarModal(false);
     alert("Car added to team successfully!");
   };
+  console.log("carData", carData);
   return (
     <Dialog
       open={openAddCarModal}
@@ -62,7 +70,7 @@ const AddCarModal: React.FC<{
           onClick={() => addCarToTeam()}
           color="error"
           variant="contained"
-          disabled={!carData || !carData.name}
+          disabled={!carData || !carData.name || !carData.carPrice}
         >
           Aggiungi auto al team
         </Button>

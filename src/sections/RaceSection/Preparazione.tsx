@@ -46,8 +46,8 @@ const Preparazione: React.FC<
   return (
     <Column sx={{ padding: 4 }}>
       <h2>Selezionare le auto per questa gara:</h2>
-      {teams
-        .sort((a, b) => a.punti - b.punti)
+      {[...teams]
+        .sort((a, b) => b.punti - a.punti)
         .map((team) => (
           <Column key={team.name}>
             <h3 style={{ marginBottom: 5 }}>{team.name}:</h3>

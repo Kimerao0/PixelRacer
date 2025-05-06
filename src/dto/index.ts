@@ -1,8 +1,6 @@
 interface Upgrade {
   name: string;
   description: string;
-  cost: number;
-  duration: number;
 }
 
 export interface RaceCar {
@@ -15,6 +13,7 @@ export interface RaceCar {
     durability: number;
     acceleration: number;
   };
+  carPrice: number;
   status: number;
   activeUpgrades: Upgrade[];
 }

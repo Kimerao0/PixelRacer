@@ -15,16 +15,12 @@ export const track_4: RaceTrack = {
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
-    { terrain: "straight" },
-    { terrain: "straight" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
-    { terrain: "straight" },
-    { terrain: "straight" },
     { terrain: "offroad" },
     { terrain: "offroad" },
 
@@ -37,9 +33,6 @@ export const track_4: RaceTrack = {
 
     // Sezione mista breve
     { terrain: "offroad" },
-    { terrain: "straight" },
-    { terrain: "straight" },
-    { terrain: "straight" },
     { terrain: "offroad" },
 
     // Curva ampia 2
@@ -52,9 +45,6 @@ export const track_4: RaceTrack = {
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
-    { terrain: "straight" },
-    { terrain: "straight" },
-    { terrain: "straight" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
@@ -69,9 +59,6 @@ export const track_4: RaceTrack = {
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
-    { terrain: "straight" },
-    { terrain: "straight" },
-    { terrain: "straight" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },
@@ -80,10 +67,6 @@ export const track_4: RaceTrack = {
     { terrain: "turn" },
     { terrain: "turn" },
     { terrain: "turn" },
-
-    { terrain: "straight" },
-    { terrain: "straight" },
-    { terrain: "straight" },
     { terrain: "offroad" },
     { terrain: "offroad" },
     { terrain: "offroad" },

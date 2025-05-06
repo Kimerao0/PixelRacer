@@ -5,40 +5,12 @@ import { Button } from "@mui/material";
 import { Column } from "../../style";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useGoHome } from "../../hooks/useGoHome";
+import { RaceTeam } from "../../dto";
 
 export interface GaraElProps {
   teams: RaceTeam[];
   currentTrack: number;
   setRaceState: React.Dispatch<React.SetStateAction<RaceState>>;
-}
-
-interface Upgrade {
-  name: string;
-  description: string;
-  cost: number;
-  duration: number;
-}
-
-export interface RaceCar {
-  name: string;
-  image: string;
-  stats: {
-    topSpeed: number;
-    maneuverability: number;
-    offroad: number;
-    durability: number;
-    acceleration: number;
-  };
-  status: number;
-  activeUpgrades: Upgrade[];
-}
-
-export interface RaceTeam {
-  name: string;
-  credits: number;
-  cars: RaceCar[];
-  upgrades: Upgrade[];
-  punti: number;
 }
 
 const PreGara: React.FC<GaraElProps> = ({

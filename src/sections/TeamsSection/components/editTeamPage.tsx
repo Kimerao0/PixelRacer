@@ -38,8 +38,11 @@ const EditTeamPage: React.FC<Props> = ({ teams, setTeams }) => {
   return (
     <>
       <Column>
+        <h2>Modifica team:</h2>
         <Row style={{ alignItems: "center" }}>
-          <h2>Modifica team: {team.name}</h2>
+          <h3>
+            {team.name} (Crediti: {team.credits})
+          </h3>
           <Box sx={{ ml: 6 }}>
             <IconButton
               onClick={() => setOpenDeleteModal(true)}

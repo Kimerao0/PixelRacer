@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { RaceCar, RaceTeam } from "../../dto";
 import { Column } from "../../style";
 import PreGara from "./PreGara";

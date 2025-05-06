@@ -71,7 +71,7 @@ export function deterioramentoStatusAuto(
   const decayFactor = velocita / 2 / d;
 
   // Costante di scala: più piccola = decadimento più dolce
-  const SCALE = 0.25;
+  const SCALE = status < 50 ? 0.1 : 0.5;
 
   // Decadimento “base”
   const decay = decayFactor * SCALE;
@@ -109,7 +109,8 @@ export function boostedTeamsPostRace(teams: RaceTeam[]): RaceTeam[] {
     ...team,
     cars: team.cars.map((car) => ({
       ...car,
-      status: car.status + 5 > 100 ? 100 : car.status + 5,
+      status:
+        car.status < 70 ? car.status + (100 - car.status) / 10 : car.status,
     })),
   }));
 }
