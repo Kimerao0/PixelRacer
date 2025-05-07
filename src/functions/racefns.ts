@@ -87,7 +87,7 @@ export function deterioramentoStatusAuto(
   const decayFactor = velocita / 2 / d;
 
   // Costante di scala: più piccola = decadimento più dolce
-  const SCALE = status < 50 ? 0.1 : 0.5;
+  const SCALE = status < 30 ? 0.1 : 0.4;
 
   // Decadimento “base”
   const decay = decayFactor * SCALE;

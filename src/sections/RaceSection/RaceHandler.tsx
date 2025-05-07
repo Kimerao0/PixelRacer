@@ -56,10 +56,22 @@ const RaceHandler: React.FC<{
 
   useEffect(() => {
     // calculate a bonus luck for each car (1-25)
-    const newCarsRaceState = carsRaceState.map((carState) => ({
-      ...carState,
-      bonusLuck: Math.floor(Math.random() * 25) + 1,
-    }));
+    const newCarsRaceState = carsRaceState.map((carState) => {
+      const isCarStatusUpdatedBy30 = carState.upgrade === "repair30";
+      const isCarStatusUpdatedBy60 = carState.upgrade === "repair60";
+      return {
+        ...carState,
+        bonusLuck: Math.floor(Math.random() * 25) + 1,
+        car: {
+          ...carState.car,
+          status: isCarStatusUpdatedBy30
+            ? returnValueInBoundaries(carState.car.status + 30)
+            : isCarStatusUpdatedBy60
+            ? returnValueInBoundaries(carState.car.status + 60)
+            : carState.car.status,
+        },
+      };
+    });
     setCarsRaceState(newCarsRaceState);
   }, []);
 
@@ -81,14 +93,8 @@ const RaceHandler: React.FC<{
         const isCarOffroadUpdated = carState.upgrade === "suspensions";
         const isCarManuberabilityUpdated = carState.upgrade === "precision";
         const isCarDurabilityUpdated = carState.upgrade === "shield";
-        const isCarStatusUpdatedBy30 = carState.upgrade === "repair30";
-        const isCarStatusUpdatedBy60 = carState.upgrade === "repair60";
 
-        const carStatus = isCarStatusUpdatedBy30
-          ? returnValueInBoundaries(carState.car.status + 30)
-          : isCarStatusUpdatedBy60
-          ? returnValueInBoundaries(carState.car.status + 60)
-          : carState.car.status;
+        const carStatus = carState.car.status;
 
         const carDurability = isCarDurabilityUpdated
           ? returnValueInBoundaries(carState.car.stats.durability + 150)
