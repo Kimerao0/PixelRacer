@@ -20,7 +20,7 @@ export function calculateAccelerationPerTick(
 ): number {
   if (acceleration < 10) acceleration = 10;
   if (acceleration > 700) acceleration = 700;
-  const acc = isCarsAccelerationUpdated ? acceleration + 150 : acceleration;
+  const acc = isCarsAccelerationUpdated ? acceleration + 700 : acceleration;
 
   const ratio = (acc - 10) / (700 - 10);
   const result = 1 + ratio * (70 - 1);
@@ -45,10 +45,10 @@ export const getCarLimiter = (
 ) => {
   switch (terrain) {
     case "offroad":
-      return isCarOffroadUpdated ? car.stats.offroad + 150 : car.stats.offroad;
+      return isCarOffroadUpdated ? car.stats.offroad + 100 : car.stats.offroad;
     case "turn":
       return isCarManuberabilityUpdated
-        ? car.stats.maneuverability + 150
+        ? car.stats.maneuverability + 100
         : car.stats.maneuverability;
     default:
       return 700;

@@ -138,10 +138,10 @@ const AddUpgradeModal: React.FC<{
 export default AddUpgradeModal;
 
 export const getUpgradeDescrition = (upgradeName: UpgradeName) => {
-  const baseDescription = "Aggiunge 150 al parametro";
+  const baseDescription = "Aggiunge 100 al parametro";
   switch (upgradeName) {
     case "hyper-speed":
-      return `Aggiunge 100 al parametro velocità massima`;
+      return `Aggiunge 50 al parametro velocità massima`;
     case "precision":
       return `${baseDescription} manovrabilità`;
     case "rocket":
@@ -149,7 +149,7 @@ export const getUpgradeDescrition = (upgradeName: UpgradeName) => {
     case "suspensions":
       return `${baseDescription} offroad`;
     case "shield":
-      return `${baseDescription} durabilità`;
+      return `Aggiunge 150 al parametro durabilità`;
     case "repair30":
       return `Ripara il 30% dello status dell'auto`;
     case "repair60":

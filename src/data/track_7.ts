@@ -6,7 +6,7 @@ export const track_7: RaceTrack = {
   image: CartelImg,
   trackId: "7",
   description:
-    "Nascosto tra le strade dissestate di un remoto avamposto sudamericano, Cartel Run è teatro di corse clandestine dove il rischio è parte del gioco. Tra sezioni offroad polverose e curve insidiose tracciate su terreni abbandonati, i piloti si sfidano tra container arrugginiti, capannoni fatiscenti e spettatori poco raccomandabili. La tensione cresce curva dopo curva fino a culminare in un rettilineo finale di 15 tiles, dove si decide tutto in uno sprint al limite, tra colpi bassi e motori urlanti. Qui non si corre per la gloria, si corre per sopravvivere.",
+    "Nascosto tra le strade dissestate di un remoto avamposto sudamericano, Cartel Run è teatro di corse clandestine dove il rischio è parte del gioco. Tra sezioni offroad polverose e curve insidiose tracciate su terreni abbandonati, i piloti si sfidano tra container arrugginiti, capannoni fatiscenti e spettatori poco raccomandabili. La tensione cresce curva dopo curva fino a culminare in un rettilineo finale di 15 km, dove si decide tutto in uno sprint al limite, tra colpi bassi e motori urlanti. Qui non si corre per la gloria, si corre per sopravvivere.",
   tiles: [
     // Inizio tecnico con offroad e curve secche
     { terrain: "offroad" },

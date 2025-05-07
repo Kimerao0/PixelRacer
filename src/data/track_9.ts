@@ -6,7 +6,7 @@ export const track_9: RaceTrack = {
   image: SnakeImg,
   trackId: "9",
   description:
-    "Nel cuore di un'antica regione indiana, Serpent Temple si snoda tra rovine dimenticate e statue sacre di divinità serpentine. Le curve numerose e avvolgenti imitano i movimenti sinuosi dei cobra, costringendo i piloti a una danza di precisione tra accelerazioni e frenate. Tre lunghi rettilinei da 10 tiles offrono invece l'opportunità di liberare la potenza e sfidare il vento, ma solo per chi ha superato le insidie precedenti. Brevi sezioni offroad rendono il percorso ancora più imprevedibile, tra polvere e sabbia che sembrano voler reclamare la pista.",
+    "Nel cuore di un'antica regione indiana, Serpent Temple si snoda tra rovine dimenticate e statue sacre di divinità serpentine. Le curve numerose e avvolgenti imitano i movimenti sinuosi dei cobra, costringendo i piloti a una danza di precisione tra accelerazioni e frenate. Tre lunghi rettilinei da 10 km offrono invece l'opportunità di liberare la potenza e sfidare il vento, ma solo per chi ha superato le insidie precedenti. Brevi sezioni offroad rendono il percorso ancora più imprevedibile, tra polvere e sabbia che sembrano voler reclamare la pista.",
   tiles: [
     // Curvature iniziali e prime insidie
     { terrain: "turn" },

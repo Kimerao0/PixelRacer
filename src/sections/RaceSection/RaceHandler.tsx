@@ -23,7 +23,6 @@ export interface CarRaceState {
   meters: number;
   currentSpeed: number;
   finalPosition: number | null;
-  bonusLuck: number;
   upgrade: UpgradeName | null;
 }
 
@@ -44,7 +43,6 @@ const RaceHandler: React.FC<{
     meters: 1,
     currentSpeed: 1,
     finalPosition: null,
-    bonusLuck: 0,
     upgrade: car.activeUpgrades[0]?.name || null,
   }));
   const [speed, setSpeed] = useState(250);
@@ -55,13 +53,11 @@ const RaceHandler: React.FC<{
   const track = tracks[currentTrack - 1];
 
   useEffect(() => {
-    // calculate a bonus luck for each car (1-25)
     const newCarsRaceState = carsRaceState.map((carState) => {
       const isCarStatusUpdatedBy30 = carState.upgrade === "repair30";
       const isCarStatusUpdatedBy60 = carState.upgrade === "repair60";
       return {
         ...carState,
-        bonusLuck: Math.floor(Math.random() * 25) + 1,
         car: {
           ...carState.car,
           status: isCarStatusUpdatedBy30
@@ -101,7 +97,7 @@ const RaceHandler: React.FC<{
           : carState.car.stats.durability;
 
         const carTopSpeed = isCarSpeedUpdated
-          ? returnValueInBoundaries(carState.car.stats.topSpeed + 100)
+          ? returnValueInBoundaries(carState.car.stats.topSpeed + 50)
           : carState.car.stats.topSpeed;
 
         const newStatus = deterioramentoStatusAuto(
@@ -117,7 +113,6 @@ const RaceHandler: React.FC<{
             currentSpeed: 0,
           };
         }
-
         const tileIdx = Math.floor(carState.meters / 1000);
         const currentTile = track.tiles[tileIdx] ?? track.tiles[0];
         const limiter = getCarLimiter(
@@ -130,7 +125,6 @@ const RaceHandler: React.FC<{
 
         const newSpeed = neverGoOverTopSpeed(
           carState.currentSpeed +
-            carState.bonusLuck +
             calculateAccelerationPerTick(
               carState.car.stats.acceleration,
               isCarsAccelerationUpdated

@@ -28,6 +28,7 @@ const DrawTrack: React.FC<{
                   <img
                     src={car.img}
                     style={{ width: 50, height: 25, position: "absolute" }}
+                    key={car.img}
                   />
                 );
               }
