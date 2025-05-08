@@ -24,13 +24,13 @@ const RaceTrackPage: React.FC<Props> = () => {
   const navigate = useNavigate();
   const handlePrev = () => {
     if (trackId === "1") {
-      navigate("/track/10");
+      navigate("/track/12");
       return;
     }
     navigate(`/track/${Number(trackId) - 1}`);
   };
   const handleNext = () => {
-    if (trackId === "10") {
+    if (trackId === "12") {
       navigate("/track/1");
       return;
     }
