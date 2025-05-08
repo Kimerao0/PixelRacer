@@ -1,5 +1,4 @@
 import { track_1 } from "./track_1";
-import { track_10 } from "./track_10";
 import { track_2 } from "./track_2";
 import { track_3 } from "./track_3";
 import { track_4 } from "./track_4";
@@ -8,6 +7,8 @@ import { track_6 } from "./track_6";
 import { track_7 } from "./track_7";
 import { track_8 } from "./track_8";
 import { track_9 } from "./track_9";
+import { track_10 } from "./track_10";
+import { track_12 } from "./track_12";
 
 export type Terrain = "straight" | "turn" | "offroad";
 
@@ -34,4 +35,5 @@ export const tracks: RaceTrack[] = [
   track_8,
   track_9,
   track_10,
+  track_12,
 ];
