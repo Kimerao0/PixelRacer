@@ -15,7 +15,7 @@ import {
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { RaceTeam } from "../../dto";
 import { RaceState } from "./RacePage";
-
+import confetti from "canvas-confetti";
 // Props del componente
 interface TeamRankingProps {
   teams: RaceTeam[];
@@ -34,6 +34,15 @@ const TeamRanking: React.FC<TeamRankingProps> = ({
     () => [...teams].sort((a, b) => b.punti - a.punti),
     [teams]
   );
+
+  // Quando il componente monta, esplode i confetti
+  React.useEffect(() => {
+    confetti({
+      particleCount: 200,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, []);
 
   const handleNextRace = () => {
     setCurrentTrack((currentTrack) =>

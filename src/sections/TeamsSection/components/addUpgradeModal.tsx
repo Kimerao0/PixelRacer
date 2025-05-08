@@ -6,6 +6,7 @@ import {
   DialogActions,
   Button,
   TextField,
+  Typography,
 } from "@mui/material";
 import { RaceTeam, UpgradeName, upgrades } from "../../../dto";
 import { getUpgradeImage } from "./editTeamPage";
@@ -89,34 +90,43 @@ const AddUpgradeModal: React.FC<{
     >
       <DialogTitle>Aggiungi un upgrade</DialogTitle>
       <DialogContent>
-        <Row sx={{ gap: 4, flexWrap: `wrap` }}>
-          {[...upgrades].map((upgrade) => (
-            <Button
-              key={upgrade}
-              variant="text"
-              onClick={() => setSelectedUpgrade(upgrade)}
-              sx={{
-                border: `3px solid ${
-                  selectedUpgrade === upgrade ? "red" : "gray"
-                }`,
-              }}
-            >
-              <img
-                src={getUpgradeImage(upgrade)}
-                alt={upgrade}
-                style={{ width: 70, height: "fit-content" }}
-              />
-            </Button>
-          ))}
+        <Column>
+          <Row sx={{ gap: 4, flexWrap: `wrap` }}>
+            {[...upgrades].map((upgrade) => (
+              <Button
+                key={upgrade}
+                variant="text"
+                onClick={() => setSelectedUpgrade(upgrade)}
+                sx={{
+                  border: `3px solid ${
+                    selectedUpgrade === upgrade ? "red" : "gray"
+                  }`,
+                }}
+              >
+                <img
+                  src={getUpgradeImage(upgrade)}
+                  alt={upgrade}
+                  style={{ width: 70, height: "fit-content" }}
+                />
+              </Button>
+            ))}
+          </Row>
+
+          <Typography variant="body2" sx={{ mt: 4 }}>
+            {selectedUpgrade
+              ? getUpgradeDescrition(selectedUpgrade)
+              : "Seleziona un upgrade"}
+          </Typography>
+
           <TextField
             label="Prezzo Upgrade"
             value={upgradePrice}
             type="number"
             onChange={handleUpgradePrice}
             variant="outlined"
-            sx={{ ml: 2, maxWidth: 400 }}
+            sx={{ maxWidth: 400, mt: 4 }}
           />
-        </Row>
+        </Column>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpenAddUpgradeModal(false)} color="primary">
@@ -149,7 +159,7 @@ export const getUpgradeDescrition = (upgradeName: UpgradeName) => {
     case "suspensions":
       return `${baseDescription} offroad`;
     case "shield":
-      return `Aggiunge 150 al parametro durabilità`;
+      return `${baseDescription} durabilità`;
     case "repair30":
       return `Ripara il 30% dello status dell'auto`;
     case "repair60":

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { GaraElProps } from "./PreGara";
-import { RaceCar, UpgradeName, Upgrade } from "../../dto";
+import { RaceCar, UpgradeName } from "../../dto";
 import { Column, Row } from "../../style";
 import CarCard from "../TeamsSection/components/carCard";
 import { Button, styled } from "@mui/material";
 import { getUpgradeImage } from "../TeamsSection/components/editTeamPage";
+import { tracks } from "../../data/tracks";
 
 const Preparazione: React.FC<
   GaraElProps & {
     setRacingCars: React.Dispatch<React.SetStateAction<RaceCar[]>>;
   }
-> = ({ teams, setRaceState, setRacingCars }) => {
+> = ({ teams, setRaceState, setRacingCars, currentTrack }) => {
   const [teamsSelection, setTeamsSelection] = useState<
     { teamName: string; carName: string; upgrade: UpgradeName | null }[]
   >([]);
@@ -64,7 +65,9 @@ const Preparazione: React.FC<
 
   return (
     <Column sx={{ padding: 4 }}>
-      <h2>Selezionare le auto per questa gara:</h2>
+      <h2>
+        Selezionare le auto per questa gara: "{tracks[currentTrack]?.name}"
+      </h2>
       {[...teams]
         .sort((a, b) => b.punti - a.punti)
         .map((team) => {

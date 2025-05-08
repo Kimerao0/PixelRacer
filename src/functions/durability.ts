@@ -21,7 +21,7 @@ export function calculateDurability(params: DurabilityParams): number {
   const MIN = 10;
   const MAX = 700;
   const MID = (MIN + MAX) / 2; // 355
-  const alpha = 0.8; // peso del raw nel blending
+  const alpha = 0.85; // 85% raw + 15% MID
 
   // 4) Blending con il centro
   let smoothed = raw * alpha + MID * (1 - alpha);
@@ -29,13 +29,20 @@ export function calculateDurability(params: DurabilityParams): number {
   // 5) Clamping iniziale
   smoothed = Math.max(MIN, Math.min(MAX, smoothed));
 
-  // 6) “Uplift” dei valori troppo bassi
-  const lowThreshold = 100; // soglia sotto cui alzare
-  const upliftFactor = 0.4; // frazione di distanza da MIN
-  if (smoothed < lowThreshold) {
-    smoothed = lowThreshold + (smoothed - MIN) * upliftFactor;
+  // 6) Uplift dei valori bassi: soglia al 15% dell’intervallo
+  const threshold = MIN + (MAX - MIN) * 0.15; // ≈113.5
+  const upliftFactor = 0.4; // 40% della distanza da MIN
+  if (smoothed < threshold) {
+    smoothed = threshold + (smoothed - MIN) * upliftFactor;
   }
 
-  // 7) Risultato finale arrotondato
-  return Math.round(smoothed);
+  // 7) Correzione gamma leggera (γ = 0.7)
+  let norm = (smoothed - MIN) / (MAX - MIN);
+  norm = Math.max(0, Math.min(1, norm));
+  const gamma = 0.7;
+  norm = Math.pow(norm, gamma);
+
+  // 8) Rimappa e arrotonda
+  const finalVal = Math.round(MIN + norm * (MAX - MIN));
+  return finalVal;
 }

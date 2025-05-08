@@ -93,7 +93,7 @@ const RaceHandler: React.FC<{
         const carStatus = carState.car.status;
 
         const carDurability = isCarDurabilityUpdated
-          ? returnValueInBoundaries(carState.car.stats.durability + 150)
+          ? returnValueInBoundaries(carState.car.stats.durability + 100)
           : carState.car.stats.durability;
 
         const carTopSpeed = isCarSpeedUpdated
