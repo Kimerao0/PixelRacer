@@ -10,6 +10,7 @@ import EditTeamPage from "./sections/TeamsSection/components/editTeamPage";
 import Header from "./components/Header";
 import RaceTrackPage from "./sections/TrackSection/RaceTrackPage";
 import RacePage from "./sections/RaceSection/RacePage";
+import CarInfo from "./components/CarInfo";
 
 const App: React.FC = () => {
   const teamsFromLocalStorage = localStorage.getItem("teams");
@@ -41,6 +42,7 @@ const App: React.FC = () => {
               path="/track/:trackId"
               element={<RaceTrackPage teams={teams} setTeams={setTeams} />}
             />
+            <Route path="/carInfo" element={<CarInfo />} />
           </Routes>
         </MainWrapper>
       </Router>

@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import CarData from "./components/CarData";
-import { Column } from "../../style";
+import { Column, Row } from "../../style";
 import { RaceCar } from "../../dto";
+import InfoIcon from "@mui/icons-material/Info";
+import { Link } from "react-router-dom";
 
 export interface CarDimensions {
   width: number;
@@ -232,7 +234,16 @@ const CarUploader: React.FC<{
 
   return (
     <div>
-      <h4>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h4>
+      <Row sx={{ justifyContent: "space-between", alignItems: "center" }}>
+        <h4>Calcolo dimensioni, conteggio pixel e metriche aggiuntive</h4>
+        <Link
+          to="/carInfo"
+          target="_blank"
+          style={{ textDecoration: "none", marginLeft: 10, color: "blue" }}
+        >
+          <InfoIcon />
+        </Link>
+      </Row>
       <Column>
         <input type="file" accept="image/png" onChange={handleImageUpload} />
         <canvas ref={canvasRef} style={{ display: "none" }} />

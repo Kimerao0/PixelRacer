@@ -190,6 +190,15 @@ const CarData: React.FC<CarDataProps> = ({
                 Rapporto volume gomme posteriori/anteriori:{" "}
                 {(groupCounts.gommeLeft / groupCounts.gommeRight).toFixed(2)}
               </Typography>
+              <Typography>
+                Rapporto volume auto / volume gomme posteriori:{" "}
+                {(
+                  (groupCounts.carrozzeria +
+                    groupCounts.vetro +
+                    groupCounts.gomme) /
+                  groupCounts.gommeLeft
+                ).toFixed(2)}
+              </Typography>
             </DataSection>
           )}
         </Box>
